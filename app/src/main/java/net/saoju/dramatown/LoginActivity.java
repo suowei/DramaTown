@@ -187,13 +187,12 @@ public class LoginActivity extends AppCompatActivity {
             Call<User> loginCall = service.login(token.getToken(), mEmail, mPassword, "on");
             try {
                 Response<User> response = loginCall.execute();
-                if (!response.isSuccess())
+                if (!response.isSuccess() && response.code() != 400)
                     return false;
                 User user = response.body();
                 SharedPreferences.Editor editor = sharedPref.edit();
                 editor.putInt("ID", user.getId());
                 editor.putString("NAME", user.getName());
-                editor.putString("EMAIL", user.getEmail());
                 editor.commit();
                 Intent intent = new Intent();
                 intent.putExtra("username", user.getName());
