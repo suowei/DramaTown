@@ -1,0 +1,50 @@
+<resources>
+    <string name="app_name">抓糖</string>
+
+    <string name="navigation_drawer_open">打开抽屉导航</string>
+    <string name="navigation_drawer_close">关闭抽屉导航</string>
+
+    <string name="search_title">搜索</string>
+    <string name="search_hint">剧名或别名</string>
+    <string name="action_settings">设置</string>
+
+    <string name="new_episode_title">%1$s%2$s《%3$s》%4$s %5$s</string>
+    <string name="new_episode_duration">%1$d\'</string>
+    <string name="new_episode_info">%1$s，%2$s</string>
+
+    <string name="review_info">%1$s 评论 《%2$s》%3$s</string>
+    <string name="drama_review_info">%1$s 评论 %2$s</string>
+
+    <string name="title_activity_episode">分集</string>
+    <string name="drama_episode_title">《%1$s》%2$s %3$s</string>
+    <string name="episode_duration">时长：%1$s分钟</string>
+    <string name="episode_release_date">发布日期：%1$s</string>
+    <string name="episode_url">发布地址：%1$s</string>
+
+    <string name="title_activity_drama">剧集</string>
+    <string name="drama_alias">副标题及别名：%1$s</string>
+    <string name="drama_type">性向：%1$s</string>
+    <string name="drama_era">时代：%1$s</string>
+    <string name="drama_genre">其他：%1$s</string>
+    <string name="drama_original">属性：%1$s</string>
+    <string name="drama_count">期数：%1$s</string>
+    <string name="drama_state">进度：%1$s</string>
+    <string name="drama_sc">主役：%1$s</string>
+    <string name="drama_commtags">热门标签：%1$s</string>
+    <string name="episode_list">分集列表：</string>
+    <string name="episode_title">%1$s %2$s</string>
+
+    <string name="drama_title">%1$s %2$s</string>
+    <string name="title_activity_login">登录</string>
+
+    <string name="prompt_email">邮箱</string>
+    <string name="prompt_password">密码</string>
+    <string name="action_sign_in">登录</string>
+    <string name="action_sign_in_short">登录</string>
+    <string name="error_invalid_email">邮箱地址格式错误</string>
+    <string name="error_invalid_password">密码略短</string>
+    <string name="error_incorrect_password">密码错误或者其他原因导致登录失败</string>
+    <string name="error_field_required">此项必填</string>
+    <string name="remember_me">记住我</string>
+    <string name="register">注册</string>
+</resources>

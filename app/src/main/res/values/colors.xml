@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="colorPrimaryLight">#C5CAE9</color>
+    <color name="textIcons">#FFFFFF</color>
+    <color name="textPrimary">#212121</color>
+    <color name="textSecondary">#727272</color>
+    <color name="colorDivider">#B6B6B6</color>
+    <color name="bsColorInfo">#C7DCE9</color>
+    <color name="bsTextInfo">#2C5B7A</color>
+    <color name="background">#E7E7E7</color>
+    <color name="linkColor">#337AB7</color>
+    <color name="textScrim">#33000000</color>
+</resources>

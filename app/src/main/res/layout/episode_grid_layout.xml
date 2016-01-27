@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<net.saoju.dramatown.Utils.PosterFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="2dp">
+
+    <ImageView
+        android:id="@+id/poster"
+        android:scaleType="centerCrop"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <LinearLayout
+        android:orientation="vertical" android:layout_width="match_parent"
+        android:layout_height="wrap_content" android:padding="16dp"
+        android:minHeight="68dp"
+        android:background="@color/textScrim"
+        android:layout_gravity="bottom">
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textColor="@color/textIcons" />
+        <TextView
+            android:id="@+id/release_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:textColor="@color/textIcons" />
+
+    </LinearLayout>
+
+</net.saoju.dramatown.Utils.PosterFrameLayout>
