@@ -73,7 +73,7 @@ public class NewEpisodesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         NewEpisode newEpisode = newEpisodes.get(position);
         if (holder instanceof GroupItemHolder) {
             GroupItemHolder groupItemHolder = (GroupItemHolder) holder;
-            groupItemHolder.releaseDate.setText(newEpisode.getReleaseDate());
+            groupItemHolder.releaseDate.setText(newEpisode.getReleaseDateString());
             setData(groupItemHolder, newEpisode);
         } else {
             NormalItemHolder normalItemHolder = (NormalItemHolder) holder;

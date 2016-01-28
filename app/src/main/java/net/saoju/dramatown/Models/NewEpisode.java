@@ -1,5 +1,8 @@
 package net.saoju.dramatown.Models;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 public class NewEpisode {
@@ -104,6 +107,20 @@ public class NewEpisode {
 
     public void setReleaseDate(String releaseDate) {
         this.releaseDate = releaseDate;
+    }
+
+    public String getReleaseDateString() {
+        SimpleDateFormat sdf= new SimpleDateFormat("yyyy-MM-dd");
+        Calendar today = Calendar.getInstance();
+        Calendar yesterday = Calendar.getInstance();
+        yesterday.add(Calendar.DATE, -1);
+        if (releaseDate.equals(sdf.format(today.getTime()))) {
+            return "今天";
+        } else if (releaseDate.equals(sdf.format(yesterday.getTime()))) {
+            return "昨天";
+        } else {
+            return releaseDate;
+        }
     }
 
     public String getSc() {
