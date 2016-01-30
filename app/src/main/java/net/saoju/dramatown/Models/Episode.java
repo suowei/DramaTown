@@ -13,21 +13,7 @@ public class Episode {
     private String introduction;
     private int reviews;
     private Drama drama;
-
-    public Episode(int id, int drama_id, String title, String alias, int duration, String release_date,
-                   String sc, String url, String poster_url, String introduction, Drama drama) {
-        this.id = id;
-        this.drama_id = drama_id;
-        this.title = title;
-        this.alias = alias;
-        this.duration = duration;
-        this.release_date = release_date;
-        this.sc = sc;
-        this.url = url;
-        this.poster_url = poster_url;
-        this.introduction = introduction;
-        this.drama = drama;
-    }
+    private EpisodeFavorite userFavorite;
 
     public int getId() {
         return id;
@@ -123,5 +109,9 @@ public class Episode {
 
     public void setReviews(int reviews) {
         this.reviews = reviews;
+    }
+
+    public EpisodeFavorite getUserFavorite() {
+        return userFavorite;
     }
 }

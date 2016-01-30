@@ -20,6 +20,7 @@ import com.squareup.picasso.Picasso;
 
 import net.saoju.dramatown.Adapters.SectionsPagerAdapter;
 import net.saoju.dramatown.Models.Episode;
+import net.saoju.dramatown.Models.Reviews;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,7 +66,6 @@ public class EpisodeActivity extends AppCompatActivity {
     }
 
     private void init() {
-        context = this;
         collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapse_toolbar);
         imageView = (ImageView) findViewById(R.id.header);
         tabLayout = (TabLayout) findViewById(R.id.tabs);
@@ -78,6 +78,7 @@ public class EpisodeActivity extends AppCompatActivity {
 
         Bundle bundle = new Bundle();
         bundle.putInt("id", episode);
+        episodeDetailFragment.setArguments(bundle);
         episodeReviewsFragment.setArguments(bundle);
 
         fragments = new ArrayList<>();
@@ -92,37 +93,18 @@ public class EpisodeActivity extends AppCompatActivity {
 
         viewPager.setAdapter(sectionsPagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(SaojuService.BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        SaojuService service = retrofit.create(SaojuService.class);
-        Call<Episode> episodeCall = service.getEpisode(String.valueOf(episode));
-        episodeCall.enqueue(new Callback<Episode>() {
-            @Override
-            public void onResponse(Response<Episode> response) {
-                Episode episode = response.body();
-                collapsingToolbarLayout.setTitle(getResources().getString(R.string.drama_episode_title,
-                        episode.getDrama().getTitle(), episode.getTitle(), episode.getAlias()));
-                if (!episode.getPoster_url().isEmpty()) {
-                    Picasso.with(context).load(episode.getPoster_url()).into(imageView);
-                    seeBigImg(episode.getPoster_url());
-                }
-                if (episode.getReviews() > 0) {
-                    tabLayout.getTabAt(1).setText("评论（" + episode.getReviews() + "）");
-                }
-                episodeDetailFragment.updateData(episode);
-            }
-
-            @Override
-            public void onFailure(Throwable t) {
-
-            }
-        });
     }
 
-    private void seeBigImg(final String url) {
+    public void setData(final Episode episode) {
+        collapsingToolbarLayout.setTitle(getResources().getString(R.string.drama_episode_title,
+                episode.getDrama().getTitle(), episode.getTitle(), episode.getAlias()));
+        if (episode.getReviews() > 0) {
+            tabLayout.getTabAt(1).setText("评论（" + episode.getReviews() + "）");
+        }
+        context = this;
+        if (!episode.getPoster_url().isEmpty()) {
+            Picasso.with(context).load(episode.getPoster_url()).into(imageView);
+        }
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -130,7 +112,7 @@ public class EpisodeActivity extends AppCompatActivity {
                 View imgEntryView = inflater.inflate(R.layout.dialog_photo_entry, null);
                 final AlertDialog dialog = new AlertDialog.Builder(context).create();
                 ImageView img1 = (ImageView)imgEntryView.findViewById(R.id.large_image);
-                Picasso.with(context).load(url).into(img1);
+                Picasso.with(context).load(episode.getPoster_url()).into(img1);
                 dialog.setView(imgEntryView);
                 dialog.show();
                 imgEntryView.setOnClickListener(new View.OnClickListener() {
