@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import java.io.IOException;
-import java.util.HashSet;
 
 import okhttp3.Interceptor;
 import okhttp3.Response;
@@ -24,19 +23,15 @@ public class ReceivedCookiesInterceptor implements Interceptor {
     @Override
     public Response intercept(Chain chain) throws IOException {
         Response originalResponse = chain.proceed(chain.request());
-
         if (!originalResponse.headers("Set-Cookie").isEmpty()) {
-            HashSet<String> cookies = new HashSet<>();
-
+            SharedPreferences.Editor editor = getPreferences().edit();
             for (String header : originalResponse.headers("Set-Cookie")) {
-                cookies.add(header);
+                String[] cookie = header.split(";", 2);
+                String[] value = cookie[0].split("=", 2);
+                editor.putString(value[0], value[1]);
             }
-
-            getPreferences().edit()
-                    .putStringSet("cookies", cookies)
-                    .commit();
+            editor.commit();
         }
-
         return originalResponse;
     }
 }

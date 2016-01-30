@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import java.io.IOException;
-import java.util.HashSet;
+import java.util.Map;
 
 import okhttp3.Interceptor;
 import okhttp3.Request;
@@ -25,11 +25,19 @@ public class AddCookiesInterceptor implements Interceptor {
     @Override
     public Response intercept(Chain chain) throws IOException {
         Request.Builder builder = chain.request().newBuilder();
-        HashSet<String> preferences = (HashSet) getPreferences().getStringSet("cookies", new HashSet<String>());
-        for (String cookie : preferences) {
-            builder.addHeader("Cookie", cookie);
+        StringBuilder cookie = new StringBuilder("");
+        Map<String, ?> all = getPreferences().getAll();
+        for(Map.Entry<String, ?> entry : all.entrySet()){
+            if (!cookie.equals("")) {
+                cookie.append("; ");
+            }
+            cookie.append(entry.getKey());
+            cookie.append("=");
+            cookie.append(entry.getValue());
         }
-
+        if (!cookie.equals("")) {
+            builder.addHeader("Cookie", cookie.toString());
+        }
         return chain.proceed(builder.build());
     }
 }

@@ -47,4 +47,7 @@
     <string name="error_field_required">此项必填</string>
     <string name="remember_me">记住我</string>
     <string name="register">注册</string>
+
+    <string name="favorite">收藏</string>
+    <string name="review">评论</string>
 </resources>

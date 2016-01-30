@@ -58,11 +58,6 @@ public class EpisodeReviewsAdapter extends RecyclerView.Adapter<EpisodeReviewsAd
         return reviews.size();
     }
 
-    public void reset(List<Review> reviews) {
-        this.reviews = reviews;
-        notifyDataSetChanged();
-    }
-
     public void addAll(List<Review> reviews) {
         int position = getItemCount();
         this.reviews.addAll(reviews);

@@ -180,7 +180,6 @@ public class LoginActivity extends AppCompatActivity {
             Token token;
             try {
                 token = tokenCall.execute().body();
-                Log.i("token", token.getToken());
             } catch (IOException e) {
                 return false;
             }
