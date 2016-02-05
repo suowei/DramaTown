@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import net.saoju.dramatown.Adapters.NewEpisodesAdapter;
 import net.saoju.dramatown.Models.NewEpisodes;
@@ -51,6 +52,10 @@ public class NewEpisodesFragment extends Fragment {
         newEpisodesCall.enqueue(new Callback<NewEpisodes>() {
             @Override
             public void onResponse(Response<NewEpisodes> response) {
+                if (!response.isSuccess()) {
+                    Toast.makeText(getContext(), "错误码：" + response.code(), Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 NewEpisodes newEpisodes = response.body();
                 perPage = newEpisodes.getPer_page();
                 adapter = new NewEpisodesAdapter(newEpisodes.getData());
@@ -69,6 +74,10 @@ public class NewEpisodesFragment extends Fragment {
                 newCall.enqueue(new Callback<NewEpisodes>() {
                     @Override
                     public void onResponse(Response<NewEpisodes> response) {
+                        if (!response.isSuccess()) {
+                            Toast.makeText(getContext(), "错误码：" + response.code(), Toast.LENGTH_SHORT).show();
+                            return;
+                        }
                         NewEpisodes newEpisodes = response.body();
                         adapter.reset(newEpisodes.getData());
                         swipeRefreshLayout.setRefreshing(false);
@@ -93,6 +102,10 @@ public class NewEpisodesFragment extends Fragment {
                     newCall.enqueue(new Callback<NewEpisodes>() {
                         @Override
                         public void onResponse(Response<NewEpisodes> response) {
+                            if (!response.isSuccess()) {
+                                Toast.makeText(getContext(), "错误码：" + response.code(), Toast.LENGTH_SHORT).show();
+                                return;
+                            }
                             NewEpisodes newEpisodes = response.body();
                             adapter.addAll(newEpisodes.getData());
                             swipeRefreshLayout.setRefreshing(false);

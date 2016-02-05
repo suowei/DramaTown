@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import net.saoju.dramatown.Adapters.ReviewIndexAdapter;
 import net.saoju.dramatown.Models.Reviews;
@@ -54,6 +55,10 @@ public class ReviewIndexFragment extends Fragment {
         reviewsCall.enqueue(new Callback<Reviews>() {
             @Override
             public void onResponse(Response<Reviews> response) {
+                if (!response.isSuccess()) {
+                    Toast.makeText(getContext(), "错误码：" + response.code(), Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 Reviews reviews = response.body();
                 perPage = reviews.getPer_page();
                 adapter = new ReviewIndexAdapter(reviews.getData());
@@ -72,6 +77,10 @@ public class ReviewIndexFragment extends Fragment {
                 newCall.enqueue(new Callback<Reviews>() {
                     @Override
                     public void onResponse(Response<Reviews> response) {
+                        if (!response.isSuccess()) {
+                            Toast.makeText(getContext(), "错误码：" + response.code(), Toast.LENGTH_SHORT).show();
+                            return;
+                        }
                         Reviews reviews = response.body();
                         adapter.reset(reviews.getData());
                         swipeRefreshLayout.setRefreshing(false);
@@ -96,6 +105,10 @@ public class ReviewIndexFragment extends Fragment {
                     newCall.enqueue(new Callback<Reviews>() {
                         @Override
                         public void onResponse(Response<Reviews> response) {
+                            if (!response.isSuccess()) {
+                                Toast.makeText(getContext(), "错误码：" + response.code(), Toast.LENGTH_SHORT).show();
+                                return;
+                            }
                             Reviews reviews = response.body();
                             adapter.addAll(reviews.getData());
                             swipeRefreshLayout.setRefreshing(false);

@@ -50,4 +50,13 @@
 
     <string name="favorite">收藏</string>
     <string name="review">评论</string>
+    <string name="edit_favorite">修改收藏</string>
+    <string name="delete_favorite">删除收藏</string>
+    <string name="favorite_type">状态：</string>
+    <string name="favorite_type_0">想听</string>
+    <string name="favorite_type_1">在追</string>
+    <string name="favorite_type_2">听过</string>
+    <string name="favorite_type_3">搁置</string>
+    <string name="favorite_type_4">抛弃</string>
+    <string name="rating">评分：</string>
 </resources>
