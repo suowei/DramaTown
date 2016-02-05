@@ -6,6 +6,11 @@ public class EpisodeFavorite {
     private int type;
     private float rating;
 
+    public EpisodeFavorite(int type, float rating) {
+        this.type = type;
+        this.rating = rating;
+    }
+
     public int getEpisode_id() {
         return episode_id;
     }

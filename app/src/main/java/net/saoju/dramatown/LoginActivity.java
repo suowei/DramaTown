@@ -21,6 +21,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import net.saoju.dramatown.Models.Token;
 import net.saoju.dramatown.Models.User;
@@ -186,8 +187,10 @@ public class LoginActivity extends AppCompatActivity {
             Call<User> loginCall = service.login(token.getToken(), mEmail, mPassword, "on");
             try {
                 Response<User> response = loginCall.execute();
-                if (!response.isSuccess() && response.code() != 400)
+                if (!response.isSuccess() && response.code() != 400) {
+                    Toast.makeText(LoginActivity.this, "错误码：" + response.code(), Toast.LENGTH_SHORT).show();
                     return false;
+                }
                 User user = response.body();
                 SharedPreferences.Editor editor = sharedPref.edit();
                 editor.putInt("ID", user.getId());

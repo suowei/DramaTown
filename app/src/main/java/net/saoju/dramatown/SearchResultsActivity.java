@@ -11,6 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.View;
 import android.widget.SearchView;
+import android.widget.Toast;
 
 import net.saoju.dramatown.Adapters.SearchResultsAdapter;
 import net.saoju.dramatown.Models.Drama;
@@ -66,6 +67,10 @@ public class SearchResultsActivity extends AppCompatActivity {
             call.enqueue(new Callback<List<Drama>>() {
                 @Override
                 public void onResponse(Response<List<Drama>> response) {
+                    if (!response.isSuccess()) {
+                        Toast.makeText(SearchResultsActivity.this, "错误码：" + response.code(), Toast.LENGTH_SHORT).show();
+                        return;
+                    }
                     List<Drama> dramas = response.body();
                     adapter = new SearchResultsAdapter(dramas);
                     recyclerView.setAdapter(adapter);

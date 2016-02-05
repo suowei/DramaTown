@@ -22,12 +22,23 @@
             <TextView
                 android:id="@+id/favorite_type"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:textColor="@color/textPrimary" />
             <RatingBar
                 android:id="@+id/rating"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 style="?android:attr/ratingBarStyleSmall" />
+            <Button
+                android:id="@+id/edit_favorite_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/edit_favorite" />
+            <Button
+                android:id="@+id/delete_favorite_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/delete_favorite" />
         </LinearLayout>
         <LinearLayout
             android:id="@+id/add_favorite"
@@ -39,12 +50,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/favorite" />
-            <Button
-                android:id="@+id/add_review_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/review" />
         </LinearLayout>
+        <Button
+            android:id="@+id/add_review_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/review" />
         <TextView
             android:id="@+id/type"
             android:layout_width="wrap_content"

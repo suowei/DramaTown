@@ -2,10 +2,12 @@ package net.saoju.dramatown;
 
 import net.saoju.dramatown.Models.Drama;
 import net.saoju.dramatown.Models.Episode;
+import net.saoju.dramatown.Models.EpisodeFavorite;
 import net.saoju.dramatown.Models.NewEpisodes;
 import net.saoju.dramatown.Models.Reviews;
 import net.saoju.dramatown.Models.Token;
 import net.saoju.dramatown.Models.User;
+import net.saoju.dramatown.Utils.ResponseResult;
 
 import java.util.List;
 
@@ -19,7 +21,8 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface SaojuService {
-    String BASE_URL = "http://saoju.net";
+//    String BASE_URL = "http://saoju.net";
+    String BASE_URL = "http://127.0.0.100";
 
     @GET("api/newepisodes")
     Call<NewEpisodes> getNewEpidoes(@Query("page") String page);
@@ -49,4 +52,9 @@ public interface SaojuService {
     @POST("api/auth/login")
     Call<User> login(@Field("_token") String token, @Field("email") String email,
                      @Field("password") String password, @Field("remember") String remember);
+
+    @FormUrlEncoded
+    @POST("api/epfav")
+    Call<ResponseResult> addEpfav(@Field("_token") String token, @Field("episode_id") int id,
+                     @Field("type") int type, @Field("rating") float rating);
 }
