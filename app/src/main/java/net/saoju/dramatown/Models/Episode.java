@@ -114,4 +114,8 @@ public class Episode {
     public EpisodeFavorite getUserFavorite() {
         return userFavorite;
     }
+
+    public void setUserFavorite(EpisodeFavorite userFavorite) {
+        this.userFavorite = userFavorite;
+    }
 }

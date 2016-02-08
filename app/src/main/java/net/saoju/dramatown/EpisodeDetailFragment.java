@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -44,6 +45,8 @@ public class EpisodeDetailFragment extends Fragment {
     private RatingBar ratingBar;
     private LinearLayout addFavorite;
     private Button addFavoriteBtn;
+    private Button editFavoriteBtn;
+    private Button deleteFavoriteBtn;
     private Button addReviewBtn;
     private TextView type;
     private TextView era;
@@ -56,6 +59,7 @@ public class EpisodeDetailFragment extends Fragment {
     private TextView url;
     private int episodeId;
     private SaojuService service;
+    private Episode episode;
 
     public EpisodeDetailFragment() {
     }
@@ -71,21 +75,8 @@ public class EpisodeDetailFragment extends Fragment {
         ratingBar.setIsIndicator(true);
         addFavorite = (LinearLayout) view.findViewById(R.id.add_favorite);
         addFavoriteBtn = (Button) view.findViewById(R.id.add_favorite_btn);
-        addFavoriteBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final View dialogView = inflater.inflate(R.layout.dialog_epfav, container, false);//LayoutInflater.from(getContext()).inflate(R.layout.dialog_epfav, null);
-                new AlertDialog.Builder(getContext()).setTitle("收藏及评分")
-                        .setView(dialogView)
-                        .setPositiveButton("保存", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                saveFavorite(dialogView);
-                            }
-                        })
-                        .setNegativeButton("取消", null).show();
-            }
-        });
+        editFavoriteBtn = (Button) view.findViewById(R.id.edit_favorite_btn);
+        deleteFavoriteBtn = (Button) view.findViewById(R.id.delete_favorite_btn);
         addReviewBtn = (Button) view.findViewById(R.id.add_review_btn);
         type = (TextView) view.findViewById(R.id.type);
         era = (TextView) view.findViewById(R.id.era);
@@ -129,7 +120,7 @@ public class EpisodeDetailFragment extends Fragment {
         return view;
     }
 
-    private void saveFavorite(View view) {
+    private void saveFavorite(View view, final boolean isUpdate) {
         RadioGroup radioGroup = (RadioGroup) view.findViewById(R.id.favorite_type);
         final int type;
         switch (radioGroup.getCheckedRadioButtonId()) {
@@ -153,7 +144,12 @@ public class EpisodeDetailFragment extends Fragment {
             @Override
             public void onResponse(Response<Token> response) {
                 Token token = response.body();
-                Call<ResponseResult> call = service.addEpfav(token.getToken(), episodeId, type, rating);
+                Call<ResponseResult> call;
+                if (isUpdate) {
+                    call = service.editEpfav(String.valueOf(episodeId), token.getToken(), type, rating);
+                } else {
+                    call = service.addEpfav(token.getToken(), episodeId, type, rating);
+                }
                 call.enqueue(new Callback<ResponseResult>() {
                     @Override
                     public void onResponse(Response<ResponseResult> response) {
@@ -161,7 +157,7 @@ public class EpisodeDetailFragment extends Fragment {
                             Toast.makeText(getActivity(), "错误码：" + response.code(), Toast.LENGTH_SHORT).show();
                             return;
                         }
-                        updateFavorite(new EpisodeFavorite(type, rating));
+                        updateFavorite(type, rating);
                     }
 
                     @Override
@@ -177,19 +173,78 @@ public class EpisodeDetailFragment extends Fragment {
         });
     }
 
-    private void updateFavorite(EpisodeFavorite favorite) {
+    private void deleteFavorite() {
+        Call<Token> tokenCall = service.getToken();
+        tokenCall.enqueue(new Callback<Token>() {
+            @Override
+            public void onResponse(Response<Token> response) {
+                Token token = response.body();
+                Call<ResponseResult> call = service.deleteEpfav(String.valueOf(episodeId), "DELETE", token.getToken());
+                call.enqueue(new Callback<ResponseResult>() {
+                    @Override
+                    public void onResponse(Response<ResponseResult> response) {
+                        if (!response.isSuccess()) {
+                            Toast.makeText(getActivity(), "错误码：" + response.code(), Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        episode.setUserFavorite(null);
+                        favoriteLayout.setVisibility(View.GONE);
+                        addFavorite.setVisibility(View.VISIBLE);
+                    }
+
+                    @Override
+                    public void onFailure(Throwable t) {
+                    }
+                });
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+
+            }
+        });
+    }
+
+    private void setFavoriteDialog(View view, EpisodeFavorite favorite) {
+        RadioGroup radioGroup = (RadioGroup) view.findViewById(R.id.favorite_type);
+        switch (favorite.getType()) {
+            case 0:
+                radioGroup.check(R.id.favorite_type_0);
+                break;
+            case 2:
+                radioGroup.check(R.id.favorite_type_2);
+                break;
+            case 4:
+                radioGroup.check(R.id.favorite_type_4);
+                break;
+            default:
+                Toast.makeText(getContext(), "请选择收藏类型", Toast.LENGTH_SHORT).show();
+                return;
+        }
+        RatingBar ratingBar = (RatingBar) view.findViewById(R.id.rating);
+        ratingBar.setRating(favorite.getRating());
+    }
+
+    private void updateFavorite(int type, float rating) {
+        if (episode.getUserFavorite() == null) {
+            episode.setUserFavorite(new EpisodeFavorite(type, rating));
+        } else {
+            episode.getUserFavorite().setType(type);
+            episode.getUserFavorite().setRating(rating);
+        }
         favoriteLayout.setVisibility(View.VISIBLE);
         addFavorite.setVisibility(View.GONE);
-        favoriteType.setText(favorite.getTypeString());
-        if (favorite.getRating() != 0) {
-            ratingBar.setRating(favorite.getRating());
+        favoriteType.setText(episode.getUserFavorite().getTypeString());
+        if (episode.getUserFavorite().getRating() != 0) {
+            ratingBar.setRating(episode.getUserFavorite().getRating());
             ratingBar.setVisibility(View.VISIBLE);
         } else {
             ratingBar.setVisibility(View.GONE);
         }
     }
 
-    private void setData(final Episode episode) {
+    private void setData(Episode e) {
+        episode = e;
         String s = getResources().getString(R.string.drama_episode_title,
                 episode.getDrama().getTitle(), episode.getTitle(), episode.getAlias());
         SpannableString spannableString = new SpannableString(s);
@@ -212,11 +267,70 @@ public class EpisodeDetailFragment extends Fragment {
         title.setText(spannableString);
         title.setMovementMethod(LinkMovementMethod.getInstance());
         if (episode.getUserFavorite() != null) {
-            updateFavorite(episode.getUserFavorite());
+            updateFavorite(episode.getUserFavorite().getType(), episode.getUserFavorite().getRating());
         } else {
             favoriteLayout.setVisibility(View.GONE);
             addFavorite.setVisibility(View.VISIBLE);
         }
+        addFavoriteBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final View dialogView = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_epfav, null);
+                new AlertDialog.Builder(getActivity())
+                        .setTitle("添加收藏")
+                        .setView(dialogView)
+                        .setPositiveButton("保存", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                saveFavorite(dialogView, false);
+                            }
+                        })
+                        .setNegativeButton("取消", null)
+                        .show();
+            }
+        });
+        editFavoriteBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final View dialogView = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_epfav, null);
+                setFavoriteDialog(dialogView, episode.getUserFavorite());
+                new AlertDialog.Builder(getActivity())
+                        .setTitle("修改收藏")
+                        .setView(dialogView)
+                        .setPositiveButton("保存", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                saveFavorite(dialogView, true);
+                            }
+                        }).setNegativeButton("取消", null)
+                        .show();
+            }
+        });
+        deleteFavoriteBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new AlertDialog.Builder(getActivity())
+                        .setTitle("删除收藏")
+                        .setMessage("确定要删除吗？")
+                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                deleteFavorite();
+                            }
+                        })
+                        .setNegativeButton("取消", null)
+                        .show();
+            }
+        });
+        addReviewBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), WriteReviewActivity.class);
+                intent.putExtra("drama_id", episode.getDrama_id());
+                intent.putExtra("episode_id", episode.getId());
+                getActivity().startActivity(intent);
+            }
+        });
         ForegroundColorSpan span = new ForegroundColorSpan(getResources().getColor(R.color.textSecondary));
         SpannableString spanString = new SpannableString(getResources().getString(
                 R.string.drama_type, episode.getDrama().getTypeString()));
