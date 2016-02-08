@@ -59,4 +59,11 @@
     <string name="favorite_type_3">搁置</string>
     <string name="favorite_type_4">抛弃</string>
     <string name="rating">评分：</string>
+
+    <string name="title_activity_write_review">评论</string>
+    <string name="write_review_title">标题（可不填）</string>
+    <string name="write_review_content">内容</string>
+    <string name="action_save">提交</string>
+    <string name="error_invalid_title">标题略长</string>
+    <string name="error_invalid_content">内容不能为空</string>
 </resources>

@@ -47,6 +47,10 @@
             android:name=".LoginActivity"
             android:label="@string/title_activity_login" >
         </activity>
+        <activity
+            android:name=".WriteReviewActivity"
+            android:label="@string/title_activity_write_review" >
+        </activity>
     </application>
 
 </manifest>

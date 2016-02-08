@@ -2,7 +2,6 @@ package net.saoju.dramatown;
 
 import net.saoju.dramatown.Models.Drama;
 import net.saoju.dramatown.Models.Episode;
-import net.saoju.dramatown.Models.EpisodeFavorite;
 import net.saoju.dramatown.Models.NewEpisodes;
 import net.saoju.dramatown.Models.Reviews;
 import net.saoju.dramatown.Models.Token;
@@ -15,8 +14,8 @@ import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
-import retrofit2.http.Headers;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
@@ -56,5 +55,21 @@ public interface SaojuService {
     @FormUrlEncoded
     @POST("api/epfav")
     Call<ResponseResult> addEpfav(@Field("_token") String token, @Field("episode_id") int id,
-                     @Field("type") int type, @Field("rating") float rating);
+                                  @Field("type") int type, @Field("rating") float rating);
+
+    @FormUrlEncoded
+    @PUT("api/epfav/{episode}")
+    Call<ResponseResult> editEpfav(@Path("episode") String episode, @Field("_token") String token,
+                                   @Field("type") int type, @Field("rating") float rating);
+
+    @FormUrlEncoded
+    @POST("api/epfav/{episode}")
+    Call<ResponseResult> deleteEpfav(@Path("episode") String episode, @Field("_method") String method,
+                                     @Field("_token") String token);
+
+    @FormUrlEncoded
+    @POST("api/review")
+    Call<ResponseResult> addReview(@Field("_token") String token, @Field("drama_id") int dramaId,
+                                   @Field("episode_id") int episodeId, @Field("title") String title,
+                                   @Field("content") String content);
 }
