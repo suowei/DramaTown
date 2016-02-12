@@ -66,4 +66,10 @@
     <string name="action_save">提交</string>
     <string name="error_invalid_title">标题略长</string>
     <string name="error_invalid_content">内容不能为空</string>
+
+    <string name="poster">海报</string>
+    <string name="add_epfav">收藏分集</string>
+    <string name="create_episode_review">写本期评论</string>
+    <string name="add_epfav_review">收藏分集并写评</string>
+    <string name="edit_favorite_review">修改收藏及评论</string>
 </resources>

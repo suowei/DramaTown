@@ -49,6 +49,7 @@ public class NewEpisodesFragment extends Fragment {
                 .build();
         service = retrofit.create(SaojuService.class);
         newEpisodesCall = service.getNewEpidoes(null);
+        swipeRefreshLayout.setRefreshing(true);
         newEpisodesCall.enqueue(new Callback<NewEpisodes>() {
             @Override
             public void onResponse(Response<NewEpisodes> response) {
@@ -60,6 +61,7 @@ public class NewEpisodesFragment extends Fragment {
                 perPage = newEpisodes.getPer_page();
                 adapter = new NewEpisodesAdapter(newEpisodes.getData());
                 recyclerView.setAdapter(adapter);
+                swipeRefreshLayout.setRefreshing(false);
             }
 
             @Override

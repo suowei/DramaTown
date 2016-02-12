@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import net.saoju.dramatown.Adapters.EpisodeReviewsAdapter;
 import net.saoju.dramatown.Models.Reviews;
@@ -102,5 +103,27 @@ public class EpisodeReviewsFragment extends Fragment {
             }
         });
         return view;
+    }
+
+    public void refresh() {
+        swipeRefreshLayout.setRefreshing(true);
+        Call<Reviews> newCall = reviewsCall.clone();
+        newCall.enqueue(new Callback<Reviews>() {
+            @Override
+            public void onResponse(Response<Reviews> response) {
+                if (!response.isSuccess()) {
+                    Toast.makeText(getContext(), "错误码：" + response.code(), Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                Reviews reviews = response.body();
+                adapter.reset(reviews.getData());
+                swipeRefreshLayout.setRefreshing(false);
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+
+            }
+        });
     }
 }

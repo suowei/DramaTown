@@ -3,6 +3,7 @@ package net.saoju.dramatown;
 import net.saoju.dramatown.Models.Drama;
 import net.saoju.dramatown.Models.Episode;
 import net.saoju.dramatown.Models.NewEpisodes;
+import net.saoju.dramatown.Models.Review;
 import net.saoju.dramatown.Models.Reviews;
 import net.saoju.dramatown.Models.Token;
 import net.saoju.dramatown.Models.User;
@@ -20,8 +21,7 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface SaojuService {
-//    String BASE_URL = "http://saoju.net";
-    String BASE_URL = "http://127.0.0.100";
+    String BASE_URL = "http://saoju.net";
 
     @GET("api/newepisodes")
     Call<NewEpisodes> getNewEpidoes(@Query("page") String page);
@@ -72,4 +72,21 @@ public interface SaojuService {
     Call<ResponseResult> addReview(@Field("_token") String token, @Field("drama_id") int dramaId,
                                    @Field("episode_id") int episodeId, @Field("title") String title,
                                    @Field("content") String content);
+
+    @FormUrlEncoded
+    @POST("api/epfav2")
+    Call<ResponseResult> addEpfavReview(@Field("_token") String token,
+                                        @Field("episode_id") int episodeIdd, @Field("drama_id") int dramaIdd,
+                                        @Field("type") int type, @Field("rating") float rating,
+                                        @Field("title") String title, @Field("content") String content);
+
+    @FormUrlEncoded
+    @PUT("api/epfav2/{episode}")
+    Call<ResponseResult> updateEpfavReview(@Path("episode") String episode, @Field("_token") String token,
+                                         @Field("drama_id") int dramaId,
+                                         @Field("type") int type, @Field("rating") float rating,
+                                         @Field("title") String title, @Field("content") String content);
+
+    @GET("api/epfav/{episode}/edit")
+    Call<Review> editEpfavReview(@Path("episode") String episode);
 }
