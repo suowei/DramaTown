@@ -1,9 +1,11 @@
 package net.saoju.dramatown;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -70,8 +72,8 @@ public class WriteReviewActivity extends AppCompatActivity {
         }
 
         if (TextUtils.isEmpty(content)) {
-            titleView.setError(getString(R.string.error_invalid_content));
-            focusView = titleView;
+            contentView.setError(getString(R.string.error_invalid_content));
+            focusView = contentView;
             cancel = true;
         }
 
@@ -111,6 +113,8 @@ public class WriteReviewActivity extends AppCompatActivity {
                                 return;
                             }
                             Toast.makeText(WriteReviewActivity.this, "保存成功", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent();
+                            setResult(RESULT_OK, intent);
                             finish();
                         }
 
@@ -127,6 +131,16 @@ public class WriteReviewActivity extends AppCompatActivity {
                 }
             });
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId() == android.R.id.home)
+        {
+            onBackPressed();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
 

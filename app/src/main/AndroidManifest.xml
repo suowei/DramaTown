@@ -49,7 +49,11 @@
         </activity>
         <activity
             android:name=".WriteReviewActivity"
-            android:label="@string/title_activity_write_review" >
+            android:label="@string/create_episode_review" >
+        </activity>
+        <activity
+            android:name=".EpisodeFavoriteReviewActivity"
+            android:label="@string/add_epfav_review" >
         </activity>
     </application>
 
