@@ -11,17 +11,6 @@ public class NewEpisodes {
     private int to;
     private List<NewEpisode> data;
 
-    public NewEpisodes(int per_page, int current_page, String next_page_url, String prev_page_url,
-                       int from, int to, List<NewEpisode> data) {
-        this.per_page = per_page;
-        this.current_page = current_page;
-        this.next_page_url = next_page_url;
-        this.prev_page_url = prev_page_url;
-        this.from = from;
-        this.to = to;
-        this.data = data;
-    }
-
     public int getPer_page() {
         return per_page;
     }

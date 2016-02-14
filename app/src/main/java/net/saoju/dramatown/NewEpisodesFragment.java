@@ -28,9 +28,8 @@ public class NewEpisodesFragment extends Fragment {
     private LinearLayoutManager layoutManager;
 
     SaojuService service;
-    Call<NewEpisodes> newEpisodesCall;
 
-    private int perPage = 20;
+    private int perPage;
 
     public NewEpisodesFragment() {
     }
@@ -48,8 +47,19 @@ public class NewEpisodesFragment extends Fragment {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         service = retrofit.create(SaojuService.class);
-        newEpisodesCall = service.getNewEpidoes(null);
+        refresh();
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refresh();
+            }
+        });
+        return view;
+    }
+
+    private void refresh() {
         swipeRefreshLayout.setRefreshing(true);
+        Call<NewEpisodes> newEpisodesCall = service.getNewEpidoes(null);
         newEpisodesCall.enqueue(new Callback<NewEpisodes>() {
             @Override
             public void onResponse(Response<NewEpisodes> response) {
@@ -62,70 +72,46 @@ public class NewEpisodesFragment extends Fragment {
                 adapter = new NewEpisodesAdapter(newEpisodes.getData());
                 recyclerView.setAdapter(adapter);
                 swipeRefreshLayout.setRefreshing(false);
+                recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+                    @Override
+                    public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                        super.onScrollStateChanged(recyclerView, newState);
+                        if (newState == RecyclerView.SCROLL_STATE_IDLE && adapter.getItemCount()
+                                == layoutManager.findLastVisibleItemPosition() + 1) {
+                            swipeRefreshLayout.setRefreshing(true);
+                            Call<NewEpisodes> newCall = service.getNewEpidoes(
+                                    String.valueOf(adapter.getItemCount() / perPage + 1));
+                            newCall.enqueue(new Callback<NewEpisodes>() {
+                                @Override
+                                public void onResponse(Response<NewEpisodes> response) {
+                                    if (!response.isSuccess()) {
+                                        Toast.makeText(getContext(), "错误码：" + response.code(), Toast.LENGTH_SHORT).show();
+                                        return;
+                                    }
+                                    NewEpisodes newEpisodes = response.body();
+                                    adapter.addAll(newEpisodes.getData());
+                                    swipeRefreshLayout.setRefreshing(false);
+                                }
+
+                                @Override
+                                public void onFailure(Throwable t) {
+                                    swipeRefreshLayout.setRefreshing(false);
+                                }
+                            });
+                        }
+                    }
+
+                    @Override
+                    public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                        super.onScrolled(recyclerView, dx, dy);
+                    }
+                });
             }
 
             @Override
             public void onFailure(Throwable t) {
-
+                swipeRefreshLayout.setRefreshing(false);
             }
         });
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                Call<NewEpisodes> newCall = newEpisodesCall.clone();
-                newCall.enqueue(new Callback<NewEpisodes>() {
-                    @Override
-                    public void onResponse(Response<NewEpisodes> response) {
-                        if (!response.isSuccess()) {
-                            Toast.makeText(getContext(), "错误码：" + response.code(), Toast.LENGTH_SHORT).show();
-                            return;
-                        }
-                        NewEpisodes newEpisodes = response.body();
-                        adapter.reset(newEpisodes.getData());
-                        swipeRefreshLayout.setRefreshing(false);
-                    }
-
-                    @Override
-                    public void onFailure(Throwable t) {
-
-                    }
-                });
-            }
-        });
-        recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-                if (newState == RecyclerView.SCROLL_STATE_IDLE && adapter.getItemCount()
-                        == layoutManager.findLastVisibleItemPosition() + 1) {
-                    swipeRefreshLayout.setRefreshing(true);
-                    Call<NewEpisodes> newCall = service.getNewEpidoes(
-                            String.valueOf(adapter.getItemCount() / perPage + 1));
-                    newCall.enqueue(new Callback<NewEpisodes>() {
-                        @Override
-                        public void onResponse(Response<NewEpisodes> response) {
-                            if (!response.isSuccess()) {
-                                Toast.makeText(getContext(), "错误码：" + response.code(), Toast.LENGTH_SHORT).show();
-                                return;
-                            }
-                            NewEpisodes newEpisodes = response.body();
-                            adapter.addAll(newEpisodes.getData());
-                            swipeRefreshLayout.setRefreshing(false);
-                        }
-
-                        @Override
-                        public void onFailure(Throwable t) {
-
-                        }
-                    });
-                }
-            }
-
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-            }
-        });
-        return view;
     }
 }

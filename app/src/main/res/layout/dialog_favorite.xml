@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical" android:layout_width="wrap_content"
     android:layout_height="wrap_content" android:padding="8dp">
     <RadioGroup
@@ -13,11 +14,21 @@
             android:layout_height="wrap_content"
             android:text="@string/favorite_type_0" />
         <RadioButton
+            android:id="@+id/favorite_type_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/favorite_type_1" />
+        <RadioButton
             android:id="@+id/favorite_type_2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/favorite_type_2"
             android:checked="true" />
+        <RadioButton
+            android:id="@+id/favorite_type_3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/favorite_type_3" />
         <RadioButton
             android:id="@+id/favorite_type_4"
             android:layout_width="wrap_content"
@@ -43,4 +54,22 @@
             android:background="@color/transparent"
             android:src="@mipmap/ic_remove_circle_outline_black_24dp" />
     </LinearLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/tag_input"/>
+    <me.gujun.android.taggroup.TagGroup
+        android:id="@+id/tag_group"
+        android:layout_marginTop="8dp"
+        style="@style/TagGroup"
+        app:atg_isAppendMode="true"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/user_tags"/>
+    <me.gujun.android.taggroup.TagGroup
+        android:id="@+id/user_tags"
+        android:layout_marginTop="8dp"
+        style="@style/TagGroup"/>
 </LinearLayout>

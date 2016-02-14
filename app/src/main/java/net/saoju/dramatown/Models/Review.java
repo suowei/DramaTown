@@ -13,21 +13,6 @@ public class Review {
     private User user;
     private Episode episode;
 
-    public Review(int id, int drama_id, int episode_id, int user_id, String title, String content,
-                  String created_at, String updated_at, Drama drama, User user, Episode episode) {
-        this.id = id;
-        this.drama_id = drama_id;
-        this.episode_id = episode_id;
-        this.user_id = user_id;
-        this.title = title;
-        this.content = content;
-        this.created_at = created_at;
-        this.updated_at = updated_at;
-        this.drama = drama;
-        this.user = user;
-        this.episode = episode;
-    }
-
     public int getId() {
         return id;
     }

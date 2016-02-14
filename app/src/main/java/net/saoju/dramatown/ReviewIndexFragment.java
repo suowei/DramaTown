@@ -29,9 +29,8 @@ public class ReviewIndexFragment extends Fragment {
     private LinearLayoutManager layoutManager;
 
     SaojuService service;
-    Call<Reviews> reviewsCall;
 
-    private int perPage = 20;
+    private int perPage;
 
     public ReviewIndexFragment() {
     }
@@ -45,13 +44,24 @@ public class ReviewIndexFragment extends Fragment {
         layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.addItemDecoration(new ItemDivider(getContext(), R.drawable.light_divider));
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(SaojuService.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         service = retrofit.create(SaojuService.class);
-        reviewsCall = service.getReviews(null);
+        refresh();
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refresh();
+            }
+        });
+        return view;
+    }
+
+    private void refresh() {
+        swipeRefreshLayout.setRefreshing(true);
+        Call<Reviews> reviewsCall = service.getReviews(null);
         reviewsCall.enqueue(new Callback<Reviews>() {
             @Override
             public void onResponse(Response<Reviews> response) {
@@ -63,70 +73,47 @@ public class ReviewIndexFragment extends Fragment {
                 perPage = reviews.getPer_page();
                 adapter = new ReviewIndexAdapter(reviews.getData());
                 recyclerView.setAdapter(adapter);
+                swipeRefreshLayout.setRefreshing(false);
+                recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+                    @Override
+                    public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                        super.onScrollStateChanged(recyclerView, newState);
+                        if (newState == RecyclerView.SCROLL_STATE_IDLE && adapter.getItemCount()
+                                == layoutManager.findLastVisibleItemPosition() + 1) {
+                            swipeRefreshLayout.setRefreshing(true);
+                            Call<Reviews> newCall = service.getReviews(
+                                    String.valueOf(adapter.getItemCount() / perPage + 1));
+                            newCall.enqueue(new Callback<Reviews>() {
+                                @Override
+                                public void onResponse(Response<Reviews> response) {
+                                    if (!response.isSuccess()) {
+                                        Toast.makeText(getContext(), "错误码：" + response.code(), Toast.LENGTH_SHORT).show();
+                                        return;
+                                    }
+                                    Reviews reviews = response.body();
+                                    adapter.addAll(reviews.getData());
+                                    swipeRefreshLayout.setRefreshing(false);
+                                }
+
+                                @Override
+                                public void onFailure(Throwable t) {
+                                    swipeRefreshLayout.setRefreshing(false);
+                                }
+                            });
+                        }
+                    }
+
+                    @Override
+                    public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                        super.onScrolled(recyclerView, dx, dy);
+                    }
+                });
             }
 
             @Override
             public void onFailure(Throwable t) {
-
+                swipeRefreshLayout.setRefreshing(false);
             }
         });
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                Call<Reviews> newCall = reviewsCall.clone();
-                newCall.enqueue(new Callback<Reviews>() {
-                    @Override
-                    public void onResponse(Response<Reviews> response) {
-                        if (!response.isSuccess()) {
-                            Toast.makeText(getContext(), "错误码：" + response.code(), Toast.LENGTH_SHORT).show();
-                            return;
-                        }
-                        Reviews reviews = response.body();
-                        adapter.reset(reviews.getData());
-                        swipeRefreshLayout.setRefreshing(false);
-                    }
-
-                    @Override
-                    public void onFailure(Throwable t) {
-
-                    }
-                });
-            }
-        });
-        recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-                if (newState == RecyclerView.SCROLL_STATE_IDLE && adapter.getItemCount()
-                        == layoutManager.findLastVisibleItemPosition() + 1) {
-                    swipeRefreshLayout.setRefreshing(true);
-                    Call<Reviews> newCall = service.getReviews(
-                            String.valueOf(adapter.getItemCount() / perPage + 1));
-                    newCall.enqueue(new Callback<Reviews>() {
-                        @Override
-                        public void onResponse(Response<Reviews> response) {
-                            if (!response.isSuccess()) {
-                                Toast.makeText(getContext(), "错误码：" + response.code(), Toast.LENGTH_SHORT).show();
-                                return;
-                            }
-                            Reviews reviews = response.body();
-                            adapter.addAll(reviews.getData());
-                            swipeRefreshLayout.setRefreshing(false);
-                        }
-
-                        @Override
-                        public void onFailure(Throwable t) {
-
-                        }
-                    });
-                }
-            }
-
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-            }
-        });
-        return view;
     }
 }

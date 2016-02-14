@@ -31,7 +31,6 @@
     <string name="drama_state">进度：%1$s</string>
     <string name="drama_sc">主役：%1$s</string>
     <string name="drama_commtags">热门标签：%1$s</string>
-    <string name="episode_list">分集列表：</string>
     <string name="episode_title">%1$s %2$s</string>
 
     <string name="drama_title">%1$s %2$s</string>
@@ -71,5 +70,14 @@
     <string name="add_epfav">收藏分集</string>
     <string name="create_episode_review">写本期评论</string>
     <string name="add_epfav_review">收藏分集并写评</string>
-    <string name="edit_favorite_review">修改收藏及评论</string>
+    <string name="edit_favorite_review">修改收藏与评论</string>
+    <string name="favorite_tags">我的标签：</string>
+    <string name="add_favorite_review">收藏本剧并写评</string>
+    <string name="add_favorite">收藏本剧</string>
+    <string name="create_drama_review">写本剧评论</string>
+    <string name="create_review">写评论</string>
+    <string name="favorite_review">收藏与评论</string>
+    <string name="tag_input">标签（回车完成输入）：</string>
+    <string name="user_tags">常用标签：</string>
+    <string name="reset">重置</string>
 </resources>

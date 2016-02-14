@@ -54,7 +54,7 @@ public interface SaojuService {
 
     @FormUrlEncoded
     @POST("api/epfav")
-    Call<ResponseResult> addEpfav(@Field("_token") String token, @Field("episode_id") int id,
+    Call<ResponseResult> addEpfav(@Field("_token") String token, @Field("episode_id") int episodeId,
                                   @Field("type") int type, @Field("rating") float rating);
 
     @FormUrlEncoded
@@ -70,7 +70,7 @@ public interface SaojuService {
     @FormUrlEncoded
     @POST("api/review")
     Call<ResponseResult> addReview(@Field("_token") String token, @Field("drama_id") int dramaId,
-                                   @Field("episode_id") int episodeId, @Field("title") String title,
+                                   @Field("episode_id") String episodeId, @Field("title") String title,
                                    @Field("content") String content);
 
     @FormUrlEncoded
@@ -89,4 +89,38 @@ public interface SaojuService {
 
     @GET("api/epfav/{episode}/edit")
     Call<Review> editEpfavReview(@Path("episode") String episode);
+
+    @FormUrlEncoded
+    @POST("api/favorite")
+    Call<ResponseResult> addFavorite(@Field("_token") String token, @Field("drama_id") int dramaId,
+                                     @Field("type") int type, @Field("rating") float rating,
+                                     @Field("tags") String tags);
+
+    @FormUrlEncoded
+    @PUT("api/favorite/{favorite}")
+    Call<ResponseResult> editFavorite(@Path("favorite") String favorite, @Field("_token") String token,
+                                      @Field("type") int type, @Field("rating") float rating,
+                                      @Field("tags") String tags);
+
+    @FormUrlEncoded
+    @POST("api/favorite/{favorite}")
+    Call<ResponseResult> deleteFavorite(@Path("favorite") String favorite, @Field("_method") String method,
+                                        @Field("_token") String token);
+
+    @FormUrlEncoded
+    @POST("api/favorite2")
+    Call<ResponseResult> addFavoriteReview(@Field("_token") String token, @Field("drama_id") int dramaId,
+                                           @Field("type") int type, @Field("rating") float rating,
+                                           @Field("tags") String tags,
+                                           @Field("title") String title, @Field("content") String content);
+
+    @FormUrlEncoded
+    @PUT("api/favorite2/{drama}")
+    Call<ResponseResult> updateFavoriteReview(@Path("drama") String drama, @Field("_token") String token,
+                                              @Field("type") int type, @Field("rating") float rating,
+                                              @Field("tags") String tags,
+                                              @Field("title") String title, @Field("content") String content);
+
+    @GET("api/favorite/{drama}/edit")
+    Call<Review> editFavoriteReview(@Path("drama") String drama);
 }

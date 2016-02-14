@@ -127,6 +127,28 @@ public class EpisodeActivity extends AppCompatActivity {
         });
 
         episodeId = getIntent().getIntExtra("id", 0);
+
+        episodeDetailFragment = new EpisodeDetailFragment();
+
+        episodeReviewsFragment = new EpisodeReviewsFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt("id", episodeId);
+        episodeReviewsFragment.setArguments(bundle);
+
+        List<Fragment> fragments = new ArrayList<>();
+        fragments.add(episodeDetailFragment);
+        fragments.add(episodeReviewsFragment);
+
+        List<String> titles = new ArrayList<>();
+        titles.add("详情");
+        titles.add("评论");
+
+        SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), fragments, titles);
+
+        ViewPager viewPager = (ViewPager) findViewById(R.id.container);
+        viewPager.setAdapter(sectionsPagerAdapter);
+        tabLayout.setupWithViewPager(viewPager);
+
         OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(new AddCookiesInterceptor(this))
                 .addInterceptor(new ReceivedCookiesInterceptor(this))
@@ -153,36 +175,12 @@ public class EpisodeActivity extends AppCompatActivity {
 
             }
         });
-
-        episodeDetailFragment = new EpisodeDetailFragment();
-
-        episodeReviewsFragment = new EpisodeReviewsFragment();
-        Bundle bundle = new Bundle();
-        bundle.putInt("id", episodeId);
-        episodeReviewsFragment.setArguments(bundle);
-
-        List<Fragment> fragments = new ArrayList<>();
-        fragments.add(episodeDetailFragment);
-        fragments.add(episodeReviewsFragment);
-
-        List<String> titles = new ArrayList<>();
-        titles.add("详情");
-        titles.add("评论");
-
-        SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), fragments, titles);
-
-        ViewPager viewPager = (ViewPager) findViewById(R.id.container);
-        viewPager.setAdapter(sectionsPagerAdapter);
-        tabLayout.setupWithViewPager(viewPager);
     }
 
-    public void setData(Episode ep) {
-        episode = ep;
+    public void setData(Episode data) {
+        episode = data;
         toolbar.setTitle(getResources().getString(R.string.drama_episode_title,
                 episode.getDrama().getTitle(), episode.getTitle(), episode.getAlias()));
-        if (episode.getReviews() > 0) {
-            tabLayout.getTabAt(1).setText("评论（" + episode.getReviews() + "）");
-        }
         if (!episode.getPoster_url().isEmpty()) {
             Picasso.with(EpisodeActivity.this).load(episode.getPoster_url()).into(imageView);
         }
@@ -220,7 +218,7 @@ public class EpisodeActivity extends AppCompatActivity {
                 openOrCloseFabMenu();
                 Intent intent = new Intent(EpisodeActivity.this, EpisodeFavoriteReviewActivity.class);
                 intent.putExtra("drama_id", episode.getDrama_id());
-                intent.putExtra("episode_id", episode.getId());
+                intent.putExtra("episode_id", episodeId);
                 intent.putExtra("is_update", false);
                 EpisodeActivity.this.startActivityForResult(intent, 1);
             }
@@ -231,7 +229,7 @@ public class EpisodeActivity extends AppCompatActivity {
                 openOrCloseFabMenu();
                 Intent intent = new Intent(EpisodeActivity.this, EpisodeFavoriteReviewActivity.class);
                 intent.putExtra("drama_id", episode.getDrama_id());
-                intent.putExtra("episode_id", episode.getId());
+                intent.putExtra("episode_id", episodeId);
                 intent.putExtra("is_update", true);
                 intent.putExtra("type", episode.getUserFavorite().getType());
                 intent.putExtra("rating", episode.getUserFavorite().getRating());
@@ -303,7 +301,11 @@ public class EpisodeActivity extends AppCompatActivity {
             }
         });
 
+        if (episode.getReviews() > 0) {
+            tabLayout.getTabAt(1).setText("评论（" + episode.getReviews() + "）");
+        }
         episodeDetailFragment.setData(episode);
+        episodeReviewsFragment.refresh();
     }
 
     private void updateFavorite(int type, float rating) {
