@@ -6,11 +6,6 @@ public class Tagmap {
     private Tag tag;
     private int count;
 
-    public Tagmap(int drama_id, int tag_id) {
-        this.drama_id = drama_id;
-        this.tag_id = tag_id;
-    }
-
     public int getDrama_id() {
         return drama_id;
     }

@@ -20,24 +20,6 @@ public class NewEpisode {
     private int state;
     private int duration;
 
-    public NewEpisode(String dramaTitle, int type, int original, int episodeId,
-                      String episodeTitle, String releaseDate, String sc, String alias,
-                      String posterUrl, int era, String genre, int state, int duration) {
-        this.dramaTitle = dramaTitle;
-        this.type = type;
-        this.original = original;
-        this.episodeId = episodeId;
-        this.episodeTitle = episodeTitle;
-        this.releaseDate = releaseDate;
-        this.sc = sc;
-        this.alias = alias;
-        this.posterUrl = posterUrl;
-        this.era = era;
-        this.genre = genre;
-        this.state = state;
-        this.duration = duration;
-    }
-
     public String getDramaTitle() {
         return dramaTitle;
     }

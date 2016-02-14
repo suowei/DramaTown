@@ -100,9 +100,11 @@ public class WriteReviewActivity extends AppCompatActivity {
                     Call<ResponseResult> call;
                     if (isUpdate) {
                         // TODO: 2016/2/7 替换为修改评论的请求
-                        call = service.addReview(token.getToken(), dramaId, episodeId, title, content);
+                        call = service.addReview(token.getToken(),
+                                dramaId, episodeId == 0 ? null : String.valueOf(episodeId), title, content);
                     } else {
-                        call = service.addReview(token.getToken(), dramaId, episodeId, title, content);
+                        call = service.addReview(token.getToken(),
+                                dramaId, episodeId == 0 ? null : String.valueOf(episodeId), title, content);
                     }
                     call.enqueue(new Callback<ResponseResult>() {
                         @Override

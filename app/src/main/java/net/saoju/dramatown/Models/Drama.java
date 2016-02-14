@@ -18,11 +18,8 @@ public class Drama {
     private int reviews;
     private List<Episode> episodes;
     private List<Tagmap> commtags;
-
-    public Drama(int id, String title) {
-        this.id = id;
-        this.title = title;
-    }
+    private Favorite userFavorite;
+    private List<Tagmap> userTags;
 
     public int getId() {
         return id;
@@ -207,5 +204,21 @@ public class Drama {
 
     public void setCommtags(List<Tagmap> commtags) {
         this.commtags = commtags;
+    }
+
+    public Favorite getUserFavorite() {
+        return userFavorite;
+    }
+
+    public void setUserFavorite(Favorite userFavorite) {
+        this.userFavorite = userFavorite;
+    }
+
+    public List<Tagmap> getUserTags() {
+        return userTags;
+    }
+
+    public void setUserTags(List<Tagmap> userTags) {
+        this.userTags = userTags;
     }
 }

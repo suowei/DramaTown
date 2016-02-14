@@ -27,12 +27,11 @@ public class EpisodeReviewsFragment extends Fragment {
     private EpisodeReviewsAdapter adapter;
     private LinearLayoutManager layoutManager;
 
-    SaojuService service;
-    Call<Reviews> reviewsCall;
-
-    private int perPage = 20;
+    private int perPage;
 
     private int episode;
+
+    private SaojuService service;
 
     public EpisodeReviewsFragment() {
     }
@@ -46,69 +45,21 @@ public class EpisodeReviewsFragment extends Fragment {
         layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.addItemDecoration(new ItemDivider(getContext(), R.drawable.light_divider));
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(SaojuService.BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        service = retrofit.create(SaojuService.class);
+        swipeRefreshLayout.setEnabled(false);
         Bundle bundle = getArguments();
         episode = bundle.getInt("id");
-        reviewsCall = service.getEpisodeReveiws(String.valueOf(episode), null);
-        reviewsCall.enqueue(new Callback<Reviews>() {
-            @Override
-            public void onResponse(Response<Reviews> response) {
-                Reviews reviews = response.body();
-                perPage = reviews.getPer_page();
-                adapter = new EpisodeReviewsAdapter(reviews.getData());
-                recyclerView.setAdapter(adapter);
-            }
-
-            @Override
-            public void onFailure(Throwable t) {
-
-            }
-        });
-        swipeRefreshLayout.setEnabled(false);
-        recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-                if (newState == RecyclerView.SCROLL_STATE_IDLE
-                        && adapter.getItemCount() == layoutManager.findLastVisibleItemPosition() + 1
-                        && adapter.getItemCount() >= perPage) {
-                    swipeRefreshLayout.setEnabled(true);
-                    swipeRefreshLayout.setRefreshing(true);
-                    Call<Reviews> newCall = service.getEpisodeReveiws(String.valueOf(episode),
-                            String.valueOf(adapter.getItemCount() / perPage + 1));
-                    newCall.enqueue(new Callback<Reviews>() {
-                        @Override
-                        public void onResponse(Response<Reviews> response) {
-                            Reviews reviews = response.body();
-                            adapter.addAll(reviews.getData());
-                            swipeRefreshLayout.setRefreshing(false);
-                            swipeRefreshLayout.setEnabled(false);
-                        }
-
-                        @Override
-                        public void onFailure(Throwable t) {
-
-                        }
-                    });
-                }
-            }
-
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-            }
-        });
         return view;
     }
 
     public void refresh() {
         swipeRefreshLayout.setRefreshing(true);
-        Call<Reviews> newCall = reviewsCall.clone();
-        newCall.enqueue(new Callback<Reviews>() {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(SaojuService.BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        service = retrofit.create(SaojuService.class);
+        Call<Reviews> reviewsCall = service.getEpisodeReveiws(String.valueOf(episode), null);
+        reviewsCall.enqueue(new Callback<Reviews>() {
             @Override
             public void onResponse(Response<Reviews> response) {
                 if (!response.isSuccess()) {
@@ -116,13 +67,46 @@ public class EpisodeReviewsFragment extends Fragment {
                     return;
                 }
                 Reviews reviews = response.body();
-                adapter.reset(reviews.getData());
+                perPage = reviews.getPer_page();
+                adapter = new EpisodeReviewsAdapter(reviews.getData());
+                recyclerView.setAdapter(adapter);
                 swipeRefreshLayout.setRefreshing(false);
+                recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+                    @Override
+                    public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                        super.onScrollStateChanged(recyclerView, newState);
+                        if (newState == RecyclerView.SCROLL_STATE_IDLE
+                                && adapter.getItemCount() == layoutManager.findLastVisibleItemPosition() + 1
+                                && adapter.getItemCount() >= perPage) {
+                            swipeRefreshLayout.setRefreshing(true);
+                            Call<Reviews> newCall = service.getEpisodeReveiws(String.valueOf(episode),
+                                    String.valueOf(adapter.getItemCount() / perPage + 1));
+                            newCall.enqueue(new Callback<Reviews>() {
+                                @Override
+                                public void onResponse(Response<Reviews> response) {
+                                    Reviews reviews = response.body();
+                                    adapter.addAll(reviews.getData());
+                                    swipeRefreshLayout.setRefreshing(false);
+                                }
+
+                                @Override
+                                public void onFailure(Throwable t) {
+                                    swipeRefreshLayout.setRefreshing(false);
+                                }
+                            });
+                        }
+                    }
+
+                    @Override
+                    public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                        super.onScrolled(recyclerView, dx, dy);
+                    }
+                });
             }
 
             @Override
             public void onFailure(Throwable t) {
-
+                swipeRefreshLayout.setRefreshing(false);
             }
         });
     }
