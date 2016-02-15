@@ -4,6 +4,7 @@ import android.animation.ObjectAnimator;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
@@ -50,6 +51,7 @@ public class EpisodeActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
     private ImageView imageView;
+    private ImageView posterExpanded;
     private TabLayout tabLayout;
     private LinearLayout favoriteLayout;
     private TextView favoriteType;
@@ -93,6 +95,13 @@ public class EpisodeActivity extends AppCompatActivity {
         });
 
         imageView = (ImageView) findViewById(R.id.poster);
+        posterExpanded = (ImageView) findViewById(R.id.poster_expanded);
+        posterExpanded.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                posterExpanded.setVisibility(View.GONE);
+            }
+        });
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         favoriteLayout = (LinearLayout) findViewById(R.id.favorite_layout);
         favoriteType = (TextView) findViewById(R.id.favorite_type);
@@ -187,18 +196,12 @@ public class EpisodeActivity extends AppCompatActivity {
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                LayoutInflater inflater = LayoutInflater.from(EpisodeActivity.this);
-                View imgEntryView = inflater.inflate(R.layout.dialog_photo_entry, null);
-                final AlertDialog dialog = new AlertDialog.Builder(EpisodeActivity.this).create();
-                ImageView img1 = (ImageView) imgEntryView.findViewById(R.id.large_image);
-                Picasso.with(EpisodeActivity.this).load(episode.getPoster_url()).into(img1);
-                dialog.setView(imgEntryView);
-                dialog.show();
-                imgEntryView.setOnClickListener(new View.OnClickListener() {
-                    public void onClick(View paramView) {
-                        dialog.cancel();
-                    }
-                });
+                Picasso.with(EpisodeActivity.this).load(episode.getPoster_url()).into(posterExpanded);
+                posterExpanded.setVisibility(View.VISIBLE);
+                ObjectAnimator imageAnimator = ObjectAnimator.ofFloat(posterExpanded, "alpha", 0F, 1F);
+                imageAnimator.setDuration(150);
+                imageAnimator.setInterpolator(new LinearInterpolator());
+                imageAnimator.start();
             }
         });
 
@@ -354,6 +357,10 @@ public class EpisodeActivity extends AppCompatActivity {
             @Override
             public void onResponse(Response<Token> response) {
                 Token token = response.body();
+                if (!token.isAuth()) {
+                    EpisodeActivity.this.startActivity(new Intent(EpisodeActivity.this, LoginActivity.class));
+                    return;
+                }
                 Call<ResponseResult> call;
                 if (isUpdate) {
                     call = service.editEpfav(String.valueOf(episodeId), token.getToken(), type, rating);
@@ -368,7 +375,6 @@ public class EpisodeActivity extends AppCompatActivity {
                             return;
                         }
                         updateFavorite(type, rating);
-                        Toast.makeText(EpisodeActivity.this, "保存成功", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
@@ -427,6 +433,10 @@ public class EpisodeActivity extends AppCompatActivity {
             @Override
             public void onResponse(Response<Token> response) {
                 Token token = response.body();
+                if (!token.isAuth()) {
+                    EpisodeActivity.this.startActivity(new Intent(EpisodeActivity.this, LoginActivity.class));
+                    return;
+                }
                 Call<ResponseResult> call = service.deleteEpfav(String.valueOf(episodeId), "DELETE", token.getToken());
                 call.enqueue(new Callback<ResponseResult>() {
                     @Override
@@ -442,7 +452,6 @@ public class EpisodeActivity extends AppCompatActivity {
                         addFavoriteLayout.setVisibility(View.VISIBLE);
                         editFavoriteLayout.setVisibility(View.GONE);
                         deleteFavoriteLayout.setVisibility(View.GONE);
-                        Toast.makeText(EpisodeActivity.this, "删除成功", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
@@ -476,12 +485,22 @@ public class EpisodeActivity extends AppCompatActivity {
     }
 
     private void openOrCloseFabMenu() {
+        SharedPreferences sharedPref = getSharedPreferences("userInfo", MODE_PRIVATE);
+        if (sharedPref.getInt("ID", 0) == 0) {
+            EpisodeActivity.this.startActivity(new Intent(EpisodeActivity.this, LoginActivity.class));
+            return;
+        }
         ObjectAnimator animator = fabMenuOpened ? ObjectAnimator.ofFloat(fab, "rotation", 45F, 0F) :
                 ObjectAnimator.ofFloat(fab, "rotation", 0F, 45F);
-        animator.setDuration(50);
+        animator.setDuration(150);
         animator.setInterpolator(new LinearInterpolator());
         animator.start();
         fab_menu.setVisibility(fabMenuOpened ? View.GONE : View.VISIBLE);
+        ObjectAnimator menuAnimator = fabMenuOpened ? ObjectAnimator.ofFloat(fab_menu, "alpha", 1F, 0F) :
+                ObjectAnimator.ofFloat(fab_menu, "alpha", 0F, 1F);
+        menuAnimator.setDuration(150);
+        menuAnimator.setInterpolator(new LinearInterpolator());
+        menuAnimator.start();
         fabMenuOpened = !fabMenuOpened;
     }
 

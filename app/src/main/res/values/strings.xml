@@ -80,4 +80,5 @@
     <string name="tag_input">标签（回车完成输入）：</string>
     <string name="user_tags">常用标签：</string>
     <string name="reset">重置</string>
+    <string name="visible_index">出现在首页</string>
 </resources>

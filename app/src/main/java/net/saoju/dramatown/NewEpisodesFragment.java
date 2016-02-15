@@ -29,7 +29,8 @@ public class NewEpisodesFragment extends Fragment {
 
     SaojuService service;
 
-    private int perPage;
+    private int currentPage;
+    private String nextPageUrl;
 
     public NewEpisodesFragment() {
     }
@@ -68,7 +69,8 @@ public class NewEpisodesFragment extends Fragment {
                     return;
                 }
                 NewEpisodes newEpisodes = response.body();
-                perPage = newEpisodes.getPer_page();
+                currentPage = newEpisodes.getCurrent_page();
+                nextPageUrl = newEpisodes.getNext_page_url();
                 adapter = new NewEpisodesAdapter(newEpisodes.getData());
                 recyclerView.setAdapter(adapter);
                 swipeRefreshLayout.setRefreshing(false);
@@ -78,9 +80,11 @@ public class NewEpisodesFragment extends Fragment {
                         super.onScrollStateChanged(recyclerView, newState);
                         if (newState == RecyclerView.SCROLL_STATE_IDLE && adapter.getItemCount()
                                 == layoutManager.findLastVisibleItemPosition() + 1) {
+                            if (nextPageUrl == null || nextPageUrl.isEmpty()) {
+                                return;
+                            }
                             swipeRefreshLayout.setRefreshing(true);
-                            Call<NewEpisodes> newCall = service.getNewEpidoes(
-                                    String.valueOf(adapter.getItemCount() / perPage + 1));
+                            Call<NewEpisodes> newCall = service.getNewEpidoes(String.valueOf(currentPage + 1));
                             newCall.enqueue(new Callback<NewEpisodes>() {
                                 @Override
                                 public void onResponse(Response<NewEpisodes> response) {

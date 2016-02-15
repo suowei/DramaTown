@@ -4,6 +4,7 @@ import android.animation.ObjectAnimator;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -490,6 +491,10 @@ public class DramaActivity extends AppCompatActivity {
             @Override
             public void onResponse(Response<Token> response) {
                 Token token = response.body();
+                if (!token.isAuth()) {
+                    DramaActivity.this.startActivity(new Intent(DramaActivity.this, LoginActivity.class));
+                    return;
+                }
                 Call<ResponseResult> call;
                 if (isUpdate) {
                     call = service.editFavorite(String.valueOf(drama.getUserFavorite().getId()),
@@ -505,7 +510,6 @@ public class DramaActivity extends AppCompatActivity {
                             return;
                         }
                         updateFavorite(type, rating, tags);
-                        Toast.makeText(DramaActivity.this, "保存成功", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
@@ -527,6 +531,10 @@ public class DramaActivity extends AppCompatActivity {
             @Override
             public void onResponse(Response<Token> response) {
                 Token token = response.body();
+                if (!token.isAuth()) {
+                    DramaActivity.this.startActivity(new Intent(DramaActivity.this, LoginActivity.class));
+                    return;
+                }
                 Call<ResponseResult> call = service.deleteFavorite(String.valueOf(drama.getUserFavorite().getId()),
                         "DELETE", token.getToken());
                 call.enqueue(new Callback<ResponseResult>() {
@@ -544,7 +552,6 @@ public class DramaActivity extends AppCompatActivity {
                         addFavoriteLayout.setVisibility(View.VISIBLE);
                         editFavoriteLayout.setVisibility(View.GONE);
                         deleteFavoriteLayout.setVisibility(View.GONE);
-                        Toast.makeText(DramaActivity.this, "删除成功", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
@@ -579,12 +586,22 @@ public class DramaActivity extends AppCompatActivity {
     }
 
     private void openOrCloseFabMenu() {
+        SharedPreferences sharedPref = getSharedPreferences("userInfo", MODE_PRIVATE);
+        if (sharedPref.getInt("ID", 0) == 0) {
+            DramaActivity.this.startActivity(new Intent(DramaActivity.this, LoginActivity.class));
+            return;
+        }
         ObjectAnimator animator = fabMenuOpened ? ObjectAnimator.ofFloat(fab, "rotation", 45F, 0F) :
                 ObjectAnimator.ofFloat(fab, "rotation", 0F, 45F);
-        animator.setDuration(50);
+        animator.setDuration(150);
         animator.setInterpolator(new LinearInterpolator());
         animator.start();
         fab_menu.setVisibility(fabMenuOpened ? View.GONE : View.VISIBLE);
+        ObjectAnimator menuAnimator = fabMenuOpened ? ObjectAnimator.ofFloat(fab_menu, "alpha", 1F, 0F) :
+                ObjectAnimator.ofFloat(fab_menu, "alpha", 0F, 1F);
+        menuAnimator.setDuration(150);
+        menuAnimator.setInterpolator(new LinearInterpolator());
+        menuAnimator.start();
         fabMenuOpened = !fabMenuOpened;
     }
 

@@ -196,9 +196,6 @@ public class LoginActivity extends AppCompatActivity {
                 editor.putInt("ID", user.getId());
                 editor.putString("NAME", user.getName());
                 editor.commit();
-                Intent intent = new Intent();
-                intent.putExtra("username", user.getName());
-                setResult(RESULT_OK, intent);
                 return true;
             } catch (IOException e) {
                 return false;
@@ -211,6 +208,7 @@ public class LoginActivity extends AppCompatActivity {
             showProgress(false);
 
             if (success) {
+                Toast.makeText(LoginActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
                 finish();
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));

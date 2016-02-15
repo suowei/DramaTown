@@ -30,7 +30,8 @@ public class ReviewIndexFragment extends Fragment {
 
     SaojuService service;
 
-    private int perPage;
+    private int currentPage;
+    private String nextPageUrl;
 
     public ReviewIndexFragment() {
     }
@@ -70,7 +71,8 @@ public class ReviewIndexFragment extends Fragment {
                     return;
                 }
                 Reviews reviews = response.body();
-                perPage = reviews.getPer_page();
+                currentPage = reviews.getCurrent_page();
+                nextPageUrl = reviews.getNext_page_url();
                 adapter = new ReviewIndexAdapter(reviews.getData());
                 recyclerView.setAdapter(adapter);
                 swipeRefreshLayout.setRefreshing(false);
@@ -80,9 +82,11 @@ public class ReviewIndexFragment extends Fragment {
                         super.onScrollStateChanged(recyclerView, newState);
                         if (newState == RecyclerView.SCROLL_STATE_IDLE && adapter.getItemCount()
                                 == layoutManager.findLastVisibleItemPosition() + 1) {
+                            if (nextPageUrl == null || nextPageUrl.isEmpty()) {
+                                return;
+                            }
                             swipeRefreshLayout.setRefreshing(true);
-                            Call<Reviews> newCall = service.getReviews(
-                                    String.valueOf(adapter.getItemCount() / perPage + 1));
+                            Call<Reviews> newCall = service.getReviews(String.valueOf(currentPage + 1));
                             newCall.enqueue(new Callback<Reviews>() {
                                 @Override
                                 public void onResponse(Response<Reviews> response) {

@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -39,6 +40,7 @@ public class DramaFavoriteReviewActivity extends AppCompatActivity {
     private TagGroup tagGroup;
     private EditText titleView;
     private EditText contentView;
+    private CheckBox visibleView;
     private View mProgressView;
     private Button saveButton;
     private int dramaId;
@@ -97,6 +99,7 @@ public class DramaFavoriteReviewActivity extends AppCompatActivity {
 
         titleView = (EditText) findViewById(R.id.title);
         contentView = (EditText) findViewById(R.id.content);
+        visibleView = (CheckBox) findViewById(R.id.visible);
 
         saveButton = (Button) findViewById(R.id.save_button);
 
@@ -147,6 +150,7 @@ public class DramaFavoriteReviewActivity extends AppCompatActivity {
                     Review review = response.body();
                     titleView.setText(review.getTitle());
                     contentView.setText(review.getContent());
+                    visibleView.setChecked(review.getVisible() == 1);
                     saveButton.setEnabled(true);
                 }
 
@@ -195,6 +199,7 @@ public class DramaFavoriteReviewActivity extends AppCompatActivity {
 
         final String title = titleView.getText().toString();
         final String content = contentView.getText().toString();
+        final int visible = visibleView.isChecked() ? 1 : 0;
 
         StringBuilder stringBuilder = new StringBuilder();
         for (String tag:tagGroup.getTags()) {
@@ -232,13 +237,17 @@ public class DramaFavoriteReviewActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(Response<Token> response) {
                     Token token = response.body();
+                    if (!token.isAuth()) {
+                        DramaFavoriteReviewActivity.this.startActivity(new Intent(DramaFavoriteReviewActivity.this, LoginActivity.class));
+                        return;
+                    }
                     Call<ResponseResult> call;
                     if (isUpdate) {
                         call = service.updateFavoriteReview(String.valueOf(dramaId), token.getToken(),
-                                type, rating, tags, title, content);
+                                type, rating, tags, title, content, visible);
                     } else {
                         call = service.addFavoriteReview(token.getToken(), dramaId,
-                                type, rating, tags, title, content);
+                                type, rating, tags, title, content, visible);
                     }
                     call.enqueue(new Callback<ResponseResult>() {
                         @Override

@@ -71,21 +71,21 @@ public interface SaojuService {
     @POST("api/review")
     Call<ResponseResult> addReview(@Field("_token") String token, @Field("drama_id") int dramaId,
                                    @Field("episode_id") String episodeId, @Field("title") String title,
-                                   @Field("content") String content);
+                                   @Field("content") String content, @Field("visible") int visible);
 
     @FormUrlEncoded
     @POST("api/epfav2")
-    Call<ResponseResult> addEpfavReview(@Field("_token") String token,
-                                        @Field("episode_id") int episodeIdd, @Field("drama_id") int dramaIdd,
-                                        @Field("type") int type, @Field("rating") float rating,
-                                        @Field("title") String title, @Field("content") String content);
+    Call<ResponseResult> addEpfavReview(@Field("_token") String token, @Field("episode_id") int episodeIdd,
+                                        @Field("drama_id") int dramaIdd, @Field("type") int type,
+                                        @Field("rating") float rating, @Field("title") String title,
+                                        @Field("content") String content, @Field("visible") int visible);
 
     @FormUrlEncoded
     @PUT("api/epfav2/{episode}")
     Call<ResponseResult> updateEpfavReview(@Path("episode") String episode, @Field("_token") String token,
-                                         @Field("drama_id") int dramaId,
-                                         @Field("type") int type, @Field("rating") float rating,
-                                         @Field("title") String title, @Field("content") String content);
+                                           @Field("drama_id") int dramaId, @Field("type") int type,
+                                           @Field("rating") float rating, @Field("title") String title,
+                                           @Field("content") String content, @Field("visible") int visible);
 
     @GET("api/epfav/{episode}/edit")
     Call<Review> editEpfavReview(@Path("episode") String episode);
@@ -111,15 +111,15 @@ public interface SaojuService {
     @POST("api/favorite2")
     Call<ResponseResult> addFavoriteReview(@Field("_token") String token, @Field("drama_id") int dramaId,
                                            @Field("type") int type, @Field("rating") float rating,
-                                           @Field("tags") String tags,
-                                           @Field("title") String title, @Field("content") String content);
+                                           @Field("tags") String tags, @Field("title") String title,
+                                           @Field("content") String content, @Field("visible") int visible);
 
     @FormUrlEncoded
     @PUT("api/favorite2/{drama}")
     Call<ResponseResult> updateFavoriteReview(@Path("drama") String drama, @Field("_token") String token,
                                               @Field("type") int type, @Field("rating") float rating,
-                                              @Field("tags") String tags,
-                                              @Field("title") String title, @Field("content") String content);
+                                              @Field("tags") String tags, @Field("title") String title,
+                                              @Field("content") String content, @Field("visible") int visible);
 
     @GET("api/favorite/{drama}/edit")
     Call<Review> editFavoriteReview(@Path("drama") String drama);
