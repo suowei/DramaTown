@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -28,6 +29,7 @@ public class WriteReviewActivity extends AppCompatActivity {
 
     private EditText titleView;
     private EditText contentView;
+    private CheckBox visibleView;
     private View mProgressView;
     private Button saveButton;
     private int dramaId;
@@ -40,6 +42,7 @@ public class WriteReviewActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         titleView = (EditText) findViewById(R.id.title);
         contentView = (EditText) findViewById(R.id.content);
+        visibleView = (CheckBox) findViewById(R.id.visible);
 
         saveButton = (Button) findViewById(R.id.save_button);
         saveButton.setOnClickListener(new OnClickListener() {
@@ -61,6 +64,7 @@ public class WriteReviewActivity extends AppCompatActivity {
 
         final String title = titleView.getText().toString();
         final String content = contentView.getText().toString();
+        final int visible = visibleView.isChecked() ? 1 : 0;
 
         boolean cancel = false;
         View focusView = null;
@@ -97,14 +101,18 @@ public class WriteReviewActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(Response<Token> response) {
                     Token token = response.body();
+                    if (!token.isAuth()) {
+                        WriteReviewActivity.this.startActivity(new Intent(WriteReviewActivity.this, LoginActivity.class));
+                        return;
+                    }
                     Call<ResponseResult> call;
                     if (isUpdate) {
                         // TODO: 2016/2/7 替换为修改评论的请求
                         call = service.addReview(token.getToken(),
-                                dramaId, episodeId == 0 ? null : String.valueOf(episodeId), title, content);
+                                dramaId, episodeId == 0 ? null : String.valueOf(episodeId), title, content, visible);
                     } else {
                         call = service.addReview(token.getToken(),
-                                dramaId, episodeId == 0 ? null : String.valueOf(episodeId), title, content);
+                                dramaId, episodeId == 0 ? null : String.valueOf(episodeId), title, content, visible);
                     }
                     call.enqueue(new Callback<ResponseResult>() {
                         @Override

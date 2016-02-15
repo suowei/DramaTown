@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -37,6 +38,7 @@ public class EpisodeFavoriteReviewActivity extends AppCompatActivity {
     private RatingBar ratingBar;
     private EditText titleView;
     private EditText contentView;
+    private CheckBox visibleView;
     private View mProgressView;
     private Button saveButton;
     private int dramaId;
@@ -75,6 +77,7 @@ public class EpisodeFavoriteReviewActivity extends AppCompatActivity {
 
         titleView = (EditText) findViewById(R.id.title);
         contentView = (EditText) findViewById(R.id.content);
+        visibleView = (CheckBox) findViewById(R.id.visible);
 
         saveButton = (Button) findViewById(R.id.save_button);
 
@@ -116,6 +119,7 @@ public class EpisodeFavoriteReviewActivity extends AppCompatActivity {
                     Review review = response.body();
                     titleView.setText(review.getTitle());
                     contentView.setText(review.getContent());
+                    visibleView.setChecked(review.getVisible() == 1);
                     saveButton.setEnabled(true);
                 }
 
@@ -158,6 +162,7 @@ public class EpisodeFavoriteReviewActivity extends AppCompatActivity {
 
         final String title = titleView.getText().toString();
         final String content = contentView.getText().toString();
+        final int visible = visibleView.isChecked() ? 1 : 0;
 
         boolean cancel = false;
         View focusView = null;
@@ -185,12 +190,17 @@ public class EpisodeFavoriteReviewActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(Response<Token> response) {
                     Token token = response.body();
+                    if (!token.isAuth()) {
+                        EpisodeFavoriteReviewActivity.this.startActivity(new Intent(EpisodeFavoriteReviewActivity.this, LoginActivity.class));
+                        return;
+                    }
                     Call<ResponseResult> call;
                     if (isUpdate) {
                         call = service.updateEpfavReview(String.valueOf(episodeId), token.getToken(),
-                                dramaId, type, rating, title, content);
+                                dramaId, type, rating, title, content, visible);
                     } else {
-                        call = service.addEpfavReview(token.getToken(), episodeId, dramaId, type, rating, title, content);
+                        call = service.addEpfavReview(token.getToken(), episodeId,
+                                dramaId, type, rating, title, content, visible);
                     }
                     call.enqueue(new Callback<ResponseResult>() {
                         @Override

@@ -7,6 +7,7 @@ public class Review {
     private int user_id;
     private String title;
     private String content;
+    private int visible;
     private String created_at;
     private String updated_at;
     private Drama drama;
@@ -59,6 +60,14 @@ public class Review {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public int getVisible() {
+        return visible;
+    }
+
+    public void setVisible(int visible) {
+        this.visible = visible;
     }
 
     public String getCreated_at() {

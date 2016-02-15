@@ -222,4 +222,13 @@
         </LinearLayout>
     </LinearLayout>
 
+    <ImageView
+        android:id="@+id/poster_expanded"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:background="@color/darkBackground"
+        android:scaleType="centerInside"
+        android:contentDescription="@string/poster" />
+
 </android.support.design.widget.CoordinatorLayout>

@@ -41,8 +41,11 @@ public class MainActivity extends AppCompatActivity
     private NewEpisodesFragment newEpisodesFragment;
     private ReviewIndexFragment reviewIndexFragment;
 
-    LinearLayout loginView;
-    LinearLayout userView;
+    private LinearLayout loginView;
+    private LinearLayout userView;
+    private TextView userNameView;
+
+    private SharedPreferences sharedPref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,24 +66,24 @@ public class MainActivity extends AppCompatActivity
         View headerView = navigationView.inflateHeaderView(R.layout.nav_header_main);
         loginView = (LinearLayout) headerView.findViewById(R.id.login_view);
         userView = (LinearLayout) headerView.findViewById(R.id.user_view);
-        SharedPreferences sharedPref = getSharedPreferences("userInfo", MODE_PRIVATE);
+        Button loginButton = (Button) loginView.findViewById(R.id.login);
+        loginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                MainActivity.this.startActivity(intent);
+            }
+        });
+        userNameView = (TextView) userView.findViewById(R.id.username);
+        sharedPref = getSharedPreferences("userInfo", MODE_PRIVATE);
         String username = sharedPref.getString("NAME", "");
         if (username.isEmpty()) {
             userView.setVisibility(View.GONE);
             loginView.setVisibility(View.VISIBLE);
-            Button loginButton = (Button) loginView.findViewById(R.id.login);
-            loginButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                    MainActivity.this.startActivityForResult(intent, 0);
-                }
-            });
         } else {
             userView.setVisibility(View.VISIBLE);
             loginView.setVisibility(View.GONE);
-            TextView textView = (TextView) userView.findViewById(R.id.username);
-            textView.setText(username);
+            userNameView.setText(username);
         }
 
         init();
@@ -169,13 +172,16 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == RESULT_OK) {
-            String username = data.getExtras().getString("username");
-            TextView textView = (TextView) userView.findViewById(R.id.username);
-            textView.setText(username);
+    protected void onRestart() {
+        super.onRestart();
+        String username = sharedPref.getString("NAME", "");
+        if (username.isEmpty()) {
+            userView.setVisibility(View.GONE);
+            loginView.setVisibility(View.VISIBLE);
+        } else {
             userView.setVisibility(View.VISIBLE);
             loginView.setVisibility(View.GONE);
+            userNameView.setText(username);
         }
     }
 }

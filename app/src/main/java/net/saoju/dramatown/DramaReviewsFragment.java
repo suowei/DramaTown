@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import net.saoju.dramatown.Adapters.DramaReviewsAdapter;
 import net.saoju.dramatown.Models.Reviews;
@@ -28,7 +29,8 @@ public class DramaReviewsFragment extends Fragment {
 
     SaojuService service;
 
-    private int perPage;
+    private int currentPage;
+    private String nextPageUrl;
 
     private int drama;
 
@@ -62,7 +64,8 @@ public class DramaReviewsFragment extends Fragment {
             @Override
             public void onResponse(Response<Reviews> response) {
                 Reviews reviews = response.body();
-                perPage = reviews.getPer_page();
+                currentPage = reviews.getCurrent_page();
+                nextPageUrl = reviews.getNext_page_url();
                 adapter = new DramaReviewsAdapter(reviews.getData());
                 recyclerView.setAdapter(adapter);
                 swipeRefreshLayout.setRefreshing(false);
@@ -71,11 +74,13 @@ public class DramaReviewsFragment extends Fragment {
                     public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                         super.onScrollStateChanged(recyclerView, newState);
                         if (newState == RecyclerView.SCROLL_STATE_IDLE
-                                && adapter.getItemCount() == layoutManager.findLastVisibleItemPosition() + 1
-                                && adapter.getItemCount() >= perPage) {
+                                && adapter.getItemCount() == layoutManager.findLastVisibleItemPosition() + 1) {
+                            if (nextPageUrl == null || nextPageUrl.isEmpty()) {
+                                return;
+                            }
                             swipeRefreshLayout.setRefreshing(true);
-                            Call<Reviews> newCall = service.getDramaReveiws(String.valueOf(drama),
-                                    String.valueOf(adapter.getItemCount() / perPage + 1));
+                            Call<Reviews> newCall = service.getDramaReveiws(
+                                    String.valueOf(drama), String.valueOf(currentPage + 1));
                             newCall.enqueue(new Callback<Reviews>() {
                                 @Override
                                 public void onResponse(Response<Reviews> response) {
