@@ -195,7 +195,7 @@ public class LoginActivity extends AppCompatActivity {
                 SharedPreferences.Editor editor = sharedPref.edit();
                 editor.putInt("ID", user.getId());
                 editor.putString("NAME", user.getName());
-                editor.commit();
+                editor.apply();
                 return true;
             } catch (IOException e) {
                 return false;

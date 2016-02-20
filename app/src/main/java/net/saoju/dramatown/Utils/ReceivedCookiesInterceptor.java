@@ -30,7 +30,7 @@ public class ReceivedCookiesInterceptor implements Interceptor {
                 String[] value = cookie[0].split("=", 2);
                 editor.putString(value[0], value[1]);
             }
-            editor.commit();
+            editor.apply();
         }
         return originalResponse;
     }

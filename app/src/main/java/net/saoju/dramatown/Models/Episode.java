@@ -1,6 +1,9 @@
 package net.saoju.dramatown.Models;
 
-public class Episode {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class Episode implements Parcelable {
     private int id;
     private int drama_id;
     private String title;
@@ -118,4 +121,28 @@ public class Episode {
     public void setUserFavorite(EpisodeFavorite userFavorite) {
         this.userFavorite = userFavorite;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(title);
+    }
+
+    public static final Parcelable.Creator<Episode> CREATOR = new Creator<Episode>() {
+        @Override
+        public Episode createFromParcel(Parcel source) {
+            Episode episode = new Episode();
+            episode.title = source.readString();
+            return episode;
+        }
+
+        @Override
+        public Episode[] newArray(int size) {
+            return new Episode[size];
+        }
+    };
 }

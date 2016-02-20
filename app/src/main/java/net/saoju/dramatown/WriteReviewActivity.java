@@ -34,6 +34,8 @@ public class WriteReviewActivity extends AppCompatActivity {
     private Button saveButton;
     private int dramaId;
     private int episodeId;
+    private boolean isUpdate;
+    private int id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,20 +47,29 @@ public class WriteReviewActivity extends AppCompatActivity {
         visibleView = (CheckBox) findViewById(R.id.visible);
 
         saveButton = (Button) findViewById(R.id.save_button);
+
+        isUpdate = getIntent().getBooleanExtra("is_update", false);
         saveButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                saveReview(false);
+                saveReview();
             }
         });
 
         mProgressView = findViewById(R.id.progress_bar);
 
-        dramaId = getIntent().getIntExtra("drama_id", 0);
-        episodeId = getIntent().getIntExtra("episode_id", 0);
+        if (isUpdate) {
+            id = getIntent().getIntExtra("id", 0);
+            titleView.setText(getIntent().getStringExtra("title"));
+            contentView.setText(getIntent().getStringExtra("content"));
+            visibleView.setChecked(getIntent().getIntExtra("visible", 0) == 1);
+        } else {
+            dramaId = getIntent().getIntExtra("drama_id", 0);
+            episodeId = getIntent().getIntExtra("episode_id", 0);
+        }
     }
 
-    private void saveReview(final boolean isUpdate) {
+    private void saveReview() {
         titleView.setError(null);
         contentView.setError(null);
 
@@ -107,9 +118,7 @@ public class WriteReviewActivity extends AppCompatActivity {
                     }
                     Call<ResponseResult> call;
                     if (isUpdate) {
-                        // TODO: 2016/2/7 替换为修改评论的请求
-                        call = service.addReview(token.getToken(),
-                                dramaId, episodeId == 0 ? null : String.valueOf(episodeId), title, content, visible);
+                        call = service.updateReview(String.valueOf(id), token.getToken(), title, content, visible);
                     } else {
                         call = service.addReview(token.getToken(),
                                 dramaId, episodeId == 0 ? null : String.valueOf(episodeId), title, content, visible);
@@ -124,6 +133,11 @@ public class WriteReviewActivity extends AppCompatActivity {
                             }
                             Toast.makeText(WriteReviewActivity.this, "保存成功", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent();
+                            if (isUpdate) {
+                                intent.putExtra("title", title);
+                                intent.putExtra("content", content);
+                                intent.putExtra("visible", visible);
+                            }
                             setResult(RESULT_OK, intent);
                             finish();
                         }
@@ -145,8 +159,7 @@ public class WriteReviewActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == android.R.id.home)
-        {
+        if (item.getItemId() == android.R.id.home) {
             onBackPressed();
             return true;
         }

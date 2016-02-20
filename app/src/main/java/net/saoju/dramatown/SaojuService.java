@@ -1,7 +1,10 @@
 package net.saoju.dramatown;
 
 import net.saoju.dramatown.Models.Drama;
+import net.saoju.dramatown.Models.Dramas;
 import net.saoju.dramatown.Models.Episode;
+import net.saoju.dramatown.Models.EpisodeFavorites;
+import net.saoju.dramatown.Models.Favorites;
 import net.saoju.dramatown.Models.NewEpisodes;
 import net.saoju.dramatown.Models.Review;
 import net.saoju.dramatown.Models.Reviews;
@@ -123,4 +126,27 @@ public interface SaojuService {
 
     @GET("api/favorite/{drama}/edit")
     Call<Review> editFavoriteReview(@Path("drama") String drama);
+
+    @GET("api/drama")
+    Call<Dramas> getDramas(@Query("page") String page);
+
+    @FormUrlEncoded
+    @POST("api/review/{review}")
+    Call<ResponseResult> deleteReview(@Path("review") String review, @Field("_method") String method,
+                                      @Field("_token") String token);
+
+    @FormUrlEncoded
+    @PUT("api/review/{review}")
+    Call<ResponseResult> updateReview(@Path("review") String review, @Field("_token") String token,
+                                      @Field("title") String title, @Field("content") String content,
+                                      @Field("visible") int visible);
+
+    @GET("api/user/{user}")
+    Call<User> getUser(@Path("user") String user);
+
+    @GET("api/user/{user}/epfavs/{type}")
+    Call<EpisodeFavorites> getUserEpfavs(@Path("user") String user, @Path("type") String type, @Query("page") String page);
+
+    @GET("api/user/{user}/favorites/{type}")
+    Call<Favorites> getUserFavorites(@Path("user") String user, @Path("type") String type, @Query("page") String page);
 }

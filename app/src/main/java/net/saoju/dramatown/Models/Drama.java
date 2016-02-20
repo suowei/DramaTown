@@ -1,8 +1,11 @@
 package net.saoju.dramatown.Models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.List;
 
-public class Drama {
+public class Drama implements Parcelable {
     private int id;
     private String title;
     private String alias;
@@ -221,4 +224,46 @@ public class Drama {
     public void setUserTags(List<Tagmap> userTags) {
         this.userTags = userTags;
     }
+
+    public String getInfo() {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(getTypeString());
+        stringBuilder.append("，");
+        stringBuilder.append(getEraString());
+        stringBuilder.append("，");
+        if (genre != null && !genre.isEmpty()) {
+            stringBuilder.append(genre);
+            stringBuilder.append("，");
+        }
+        stringBuilder.append(getOriginalString());
+        stringBuilder.append("，");
+        stringBuilder.append(count);
+        stringBuilder.append("期，");
+        stringBuilder.append(getStateString());
+        return stringBuilder.toString();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(title);
+    }
+
+    public static final Parcelable.Creator<Drama> CREATOR = new Creator<Drama>() {
+        @Override
+        public Drama createFromParcel(Parcel source) {
+            Drama drama = new Drama();
+            drama.title = source.readString();
+            return drama;
+        }
+
+        @Override
+        public Drama[] newArray(int size) {
+            return new Drama[size];
+        }
+    };
 }

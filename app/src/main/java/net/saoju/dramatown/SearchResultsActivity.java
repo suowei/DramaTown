@@ -72,7 +72,7 @@ public class SearchResultsActivity extends AppCompatActivity {
                         return;
                     }
                     List<Drama> dramas = response.body();
-                    adapter = new SearchResultsAdapter(dramas);
+                    adapter = new SearchResultsAdapter(SearchResultsActivity.this, dramas);
                     recyclerView.setAdapter(adapter);
                 }
 
