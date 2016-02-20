@@ -51,7 +51,6 @@ public class EpisodeActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
     private ImageView imageView;
-    private ImageView posterExpanded;
     private TabLayout tabLayout;
     private LinearLayout favoriteLayout;
     private TextView favoriteType;
@@ -95,13 +94,6 @@ public class EpisodeActivity extends AppCompatActivity {
         });
 
         imageView = (ImageView) findViewById(R.id.poster);
-        posterExpanded = (ImageView) findViewById(R.id.poster_expanded);
-        posterExpanded.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                posterExpanded.setVisibility(View.GONE);
-            }
-        });
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         favoriteLayout = (LinearLayout) findViewById(R.id.favorite_layout);
         favoriteType = (TextView) findViewById(R.id.favorite_type);
@@ -196,12 +188,12 @@ public class EpisodeActivity extends AppCompatActivity {
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Picasso.with(EpisodeActivity.this).load(episode.getPoster_url()).into(posterExpanded);
-                posterExpanded.setVisibility(View.VISIBLE);
-                ObjectAnimator imageAnimator = ObjectAnimator.ofFloat(posterExpanded, "alpha", 0F, 1F);
-                imageAnimator.setDuration(150);
-                imageAnimator.setInterpolator(new LinearInterpolator());
-                imageAnimator.start();
+                if (episode.getPoster_url() == null || episode.getPoster_url().isEmpty()) {
+                    return;
+                }
+                Intent intent = new Intent(EpisodeActivity.this, ImageActivity.class);
+                intent.putExtra("url", episode.getPoster_url());
+                EpisodeActivity.this.startActivity(intent);
             }
         });
 
@@ -502,22 +494,5 @@ public class EpisodeActivity extends AppCompatActivity {
         menuAnimator.setInterpolator(new LinearInterpolator());
         menuAnimator.start();
         fabMenuOpened = !fabMenuOpened;
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_episode, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 }

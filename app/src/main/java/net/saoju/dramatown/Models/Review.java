@@ -1,6 +1,9 @@
 package net.saoju.dramatown.Models;
 
-public class Review {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class Review implements Parcelable {
     private int id;
     private int drama_id;
     private int episode_id;
@@ -109,4 +112,50 @@ public class Review {
     public void setEpisode(Episode episode) {
         this.episode = episode;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
+        dest.writeInt(drama_id);
+        dest.writeInt(episode_id);
+        dest.writeInt(user_id);
+        dest.writeString(title);
+        dest.writeString(content);
+        dest.writeInt(visible);
+        dest.writeString(created_at);
+        dest.writeString(updated_at);
+        dest.writeParcelable(drama, flags);
+        dest.writeParcelable(user, flags);
+        dest.writeParcelable(episode, flags);
+    }
+
+    public static final Parcelable.Creator<Review> CREATOR = new Creator<Review>() {
+        @Override
+        public Review createFromParcel(Parcel source) {
+            Review review = new Review();
+            review.id = source.readInt();
+            review.drama_id = source.readInt();
+            review.episode_id = source.readInt();
+            review.user_id = source.readInt();
+            review.title = source.readString();
+            review.content = source.readString();
+            review.visible = source.readInt();
+            review.created_at = source.readString();
+            review.updated_at = source.readString();
+            review.drama = source.readParcelable(Drama.class.getClassLoader());
+            review.user = source.readParcelable(User.class.getClassLoader());
+            review.episode = source.readParcelable(Episode.class.getClassLoader());
+            return review;
+        }
+
+        @Override
+        public Review[] newArray(int size) {
+            return new Review[size];
+        }
+    };
 }

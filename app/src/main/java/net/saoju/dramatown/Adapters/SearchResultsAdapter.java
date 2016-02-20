@@ -1,5 +1,6 @@
 package net.saoju.dramatown.Adapters;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
@@ -21,6 +22,7 @@ import java.util.List;
 
 public class SearchResultsAdapter extends RecyclerView.Adapter<SearchResultsAdapter.ViewHolder> {
     private List<Drama> dramas;
+    private Context context;
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView title;
@@ -33,15 +35,16 @@ public class SearchResultsAdapter extends RecyclerView.Adapter<SearchResultsAdap
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(v.getContext(), DramaActivity.class);
+                    Intent intent = new Intent(context, DramaActivity.class);
                     intent.putExtra("id", dramas.get(getPosition()).getId());
-                    v.getContext().startActivity(intent);
+                    context.startActivity(intent);
                 }
             });
         }
     }
 
-    public SearchResultsAdapter(List<Drama> dramas) {
+    public SearchResultsAdapter(Context context, List<Drama> dramas) {
+        this.context = context;
         this.dramas = dramas;
     }
 
@@ -54,10 +57,9 @@ public class SearchResultsAdapter extends RecyclerView.Adapter<SearchResultsAdap
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         final Drama drama = dramas.get(position);
-        String title = holder.title.getResources().getString(R.string.drama_title,
-                drama.getTitle(), drama.getAlias());
+        String title = context.getResources().getString(R.string.drama_title, drama.getTitle(), drama.getAlias());
         SpannableString spannableString = new SpannableString(title);
-        spannableString.setSpan(new ForegroundColorSpan((holder.title.getResources().getColor(R.color.textPrimary))),
+        spannableString.setSpan(new ForegroundColorSpan((context.getResources().getColor(R.color.textPrimary))),
                 0, drama.getTitle().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         holder.title.setText(spannableString);
         holder.title.setMovementMethod(LinkMovementMethod.getInstance());

@@ -1,26 +1,20 @@
 <resources>
     <string name="app_name">抓糖</string>
-
     <string name="navigation_drawer_open">打开抽屉导航</string>
     <string name="navigation_drawer_close">关闭抽屉导航</string>
-
     <string name="search_title">搜索</string>
     <string name="search_hint">剧名或别名</string>
     <string name="action_settings">设置</string>
-
     <string name="new_episode_title">%1$s%2$s《%3$s》%4$s %5$s</string>
     <string name="new_episode_duration">%1$d\'</string>
     <string name="new_episode_info">%1$s，%2$s</string>
-
     <string name="review_info">%1$s 评论 《%2$s》%3$s</string>
     <string name="drama_review_info">%1$s 评论 %2$s</string>
-
     <string name="title_activity_episode">分集</string>
     <string name="drama_episode_title">《%1$s》%2$s %3$s</string>
     <string name="episode_duration">时长：%1$s分钟</string>
     <string name="episode_release_date">发布日期：%1$s</string>
     <string name="episode_url">发布地址：%1$s</string>
-
     <string name="title_activity_drama">剧集</string>
     <string name="drama_alias">副标题及别名：%1$s</string>
     <string name="drama_type">性向：%1$s</string>
@@ -32,10 +26,8 @@
     <string name="drama_sc">主役：%1$s</string>
     <string name="drama_commtags">热门标签：%1$s</string>
     <string name="episode_title">%1$s %2$s</string>
-
     <string name="drama_title">%1$s %2$s</string>
     <string name="title_activity_login">登录</string>
-
     <string name="prompt_email">邮箱</string>
     <string name="prompt_password">密码</string>
     <string name="action_sign_in">登录</string>
@@ -46,7 +38,6 @@
     <string name="error_field_required">此项必填</string>
     <string name="remember_me">记住我</string>
     <string name="register">注册</string>
-
     <string name="favorite">收藏</string>
     <string name="review">评论</string>
     <string name="edit_favorite">修改收藏</string>
@@ -58,14 +49,12 @@
     <string name="favorite_type_3">搁置</string>
     <string name="favorite_type_4">抛弃</string>
     <string name="rating">评分：</string>
-
     <string name="title_activity_write_review">评论</string>
     <string name="write_review_title">标题（可不填）</string>
     <string name="write_review_content">内容</string>
     <string name="action_save">提交</string>
     <string name="error_invalid_title">标题略长</string>
     <string name="error_invalid_content">内容不能为空</string>
-
     <string name="poster">海报</string>
     <string name="add_epfav">收藏分集</string>
     <string name="create_episode_review">写本期评论</string>
@@ -81,4 +70,25 @@
     <string name="user_tags">常用标签：</string>
     <string name="reset">重置</string>
     <string name="visible_index">出现在首页</string>
+    <string name="logout">退出账号</string>
+    <string name="nav_index">首页</string>
+    <string name="nav_drama">剧集列表</string>
+    <string name="edit_review">修改评论</string>
+    <string name="delete_review">删除评论</string>
+    <string name="title_activity_user">用户主页</string>
+    <string name="user_created_at">%1$s 加入</string>
+    <string name="user_introduction">自我介绍：%1$s</string>
+    <string name="episode_favorite">分集收藏</string>
+    <string name="drama_favorite">剧集收藏</string>
+    <string name="user_epfav_0">想听 %1$s</string>
+    <string name="user_epfav_2">听过 %1$s</string>
+    <string name="user_epfav_4">抛弃 %1$s</string>
+    <string name="user_favorite_0">想听：%1$s部</string>
+    <string name="user_favorite_1">在追：%1$s部</string>
+    <string name="user_favorite_2">听过：%1$s部</string>
+    <string name="user_favorite_3">搁置：%1$s部</string>
+    <string name="user_favorite_4">抛弃：%1$s部</string>
+    <string name="user_review">用户评论</string>
+    <string name="user_drama_review">剧集评论：%1$s篇</string>
+    <string name="drama_episode_title_short">《%1$s》%2$s</string>
 </resources>

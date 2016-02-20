@@ -31,6 +31,6 @@ public class DramaEpisodesFragment extends Fragment {
     }
 
     public void setData(List<Episode> episodes) {
-        recyclerView.setAdapter(new DramaEpisodesAdapter(episodes));
+        recyclerView.setAdapter(new DramaEpisodesAdapter(getActivity(), episodes));
     }
 }

@@ -1,18 +1,25 @@
 package net.saoju.dramatown.Adapters;
 
+import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import net.saoju.dramatown.Models.Drama;
+import net.saoju.dramatown.Models.Episode;
 import net.saoju.dramatown.Models.Review;
 import net.saoju.dramatown.R;
+import net.saoju.dramatown.ReviewActivity;
 
 import java.util.List;
 
 public class EpisodeReviewsAdapter extends RecyclerView.Adapter<EpisodeReviewsAdapter.ViewHolder> {
     private List<Review> reviews;
+    private Context context;
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView info;
@@ -20,17 +27,28 @@ public class EpisodeReviewsAdapter extends RecyclerView.Adapter<EpisodeReviewsAd
         TextView title;
         TextView content;
 
-        public ViewHolder(View view) {
+        public ViewHolder(final View view) {
             super(view);
             info = (TextView) view.findViewById(R.id.info);
             created_at = (TextView) view.findViewById(R.id.created_at);
             title = (TextView) view.findViewById(R.id.title);
             content = (TextView) view.findViewById(R.id.content);
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, ReviewActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelable("review", reviews.get(getPosition()));
+                    intent.putExtras(bundle);
+                    context.startActivity(intent);
+                }
+            });
         }
     }
 
-    public EpisodeReviewsAdapter(List<Review> reviews) {
+    public EpisodeReviewsAdapter(Context context, List<Review> reviews) {
         this.reviews = reviews;
+        this.context = context;
     }
 
     @Override

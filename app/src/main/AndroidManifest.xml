@@ -13,6 +13,7 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,17 +24,20 @@
         <activity
             android:name=".EpisodeActivity"
             android:label="@string/title_activity_episode"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>
         <activity
             android:name=".DramaActivity"
             android:label="@string/title_activity_drama"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>
         <activity
             android:name=".SearchResultsActivity"
             android:label="@string/search_title"
             android:launchMode="singleTop"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" >
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
@@ -45,19 +49,50 @@
         </activity>
         <activity
             android:name=".LoginActivity"
-            android:label="@string/title_activity_login" >
+            android:label="@string/title_activity_login"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".WriteReviewActivity"
-            android:label="@string/review" >
+            android:label="@string/review"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".EpisodeFavoriteReviewActivity"
-            android:label="@string/favorite_review" >
+            android:label="@string/favorite_review"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".DramaFavoriteReviewActivity"
-            android:label="@string/favorite_review" >
+            android:label="@string/favorite_review"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".ImageActivity"
+            android:theme="@style/AppTheme.NoActionBar" >
+        </activity>
+        <activity
+            android:name=".DramaIndexActivity"
+            android:label="@string/nav_drama"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".ReviewActivity"
+            android:label="@string/review"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" >
+        </activity>
+        <activity
+            android:name=".UserActivity"
+            android:label="@string/title_activity_user"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" >
+        </activity>
+        <activity
+            android:name=".UserEpfavsActivity"
+            android:label="@string/episode_favorite"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" >
         </activity>
     </application>
 

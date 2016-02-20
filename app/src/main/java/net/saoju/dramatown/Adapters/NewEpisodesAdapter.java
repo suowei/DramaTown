@@ -1,5 +1,6 @@
 package net.saoju.dramatown.Adapters;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
@@ -18,6 +19,7 @@ import java.util.List;
 public class NewEpisodesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private List<NewEpisode> newEpisodes;
+    private Context context;
 
     public class NormalItemHolder extends RecyclerView.ViewHolder {
         LinearLayout card;
@@ -36,9 +38,9 @@ public class NewEpisodesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             view.findViewById(R.id.card_content).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(view.getContext(), EpisodeActivity.class);
+                    Intent intent = new Intent(context, EpisodeActivity.class);
                     intent.putExtra("id", newEpisodes.get(getPosition()).getEpisodeId());
-                    view.getContext().startActivity(intent);
+                    context.startActivity(intent);
                 }
             });
         }
@@ -53,7 +55,8 @@ public class NewEpisodesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         }
     }
 
-    public NewEpisodesAdapter(List<NewEpisode> newEpisodes) {
+    public NewEpisodesAdapter(Context context, List<NewEpisode> newEpisodes) {
+        this.context = context;
         this.newEpisodes = newEpisodes;
     }
 
@@ -82,11 +85,11 @@ public class NewEpisodesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     }
 
     public void setData(NormalItemHolder holder, NewEpisode newEpisode) {
-        holder.title.setText(holder.title.getResources().getString(R.string.new_episode_title,
+        holder.title.setText(context.getResources().getString(R.string.new_episode_title,
                 newEpisode.getEraString(), newEpisode.getTypeString(),
                 newEpisode.getDramaTitle(), newEpisode.getEpisodeTitle(), newEpisode.getAlias()));
-        holder.duration.setText(holder.duration.getResources()
-                .getString(R.string.new_episode_duration, newEpisode.getDuration()));
+        holder.duration.setText(context.getResources().getString(
+                R.string.new_episode_duration, newEpisode.getDuration()));
         holder.sc.setText(newEpisode.getSc());
         if (newEpisode.isOriginal()) {
             holder.info.setText(newEpisode.getOriginalString());
@@ -95,14 +98,14 @@ public class NewEpisodesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         }
         if (newEpisode.getState() == 1) {
             holder.title.getPaint().setFakeBoldText(true);
-            holder.title.setTextColor(holder.title.getResources().getColor(R.color.bsTextInfo));
-            holder.sc.setTextColor(holder.title.getResources().getColor(R.color.bsTextInfo));
-            holder.card.setBackgroundColor(holder.title.getResources().getColor(R.color.bsColorInfo));
+            holder.title.setTextColor(context.getResources().getColor(R.color.bsTextInfo));
+            holder.sc.setTextColor(context.getResources().getColor(R.color.bsTextInfo));
+            holder.card.setBackgroundColor(context.getResources().getColor(R.color.bsColorInfo));
 
         } else {
             holder.title.getPaint().setFakeBoldText(false);
-            holder.title.setTextColor(holder.title.getResources().getColor(R.color.textPrimary));
-            holder.sc.setTextColor(holder.title.getResources().getColor(R.color.textPrimary));
+            holder.title.setTextColor(context.getResources().getColor(R.color.textPrimary));
+            holder.sc.setTextColor(context.getResources().getColor(R.color.textPrimary));
             holder.card.setBackgroundColor(Color.TRANSPARENT);
         }
     }

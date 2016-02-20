@@ -5,6 +5,8 @@ public class EpisodeFavorite {
     private int user_id;
     private int type;
     private float rating;
+    private String updated_at;
+    private UserEpfavEpisode episode;
 
     public EpisodeFavorite(int type, float rating) {
         this.type = type;
@@ -54,5 +56,21 @@ public class EpisodeFavorite {
 
     public void setRating(float rating) {
         this.rating = rating;
+    }
+
+    public String getUpdated_at() {
+        return updated_at;
+    }
+
+    public void setUpdated_at(String updated_at) {
+        this.updated_at = updated_at;
+    }
+
+    public UserEpfavEpisode getEpisode() {
+        return episode;
+    }
+
+    public void setEpisode(UserEpfavEpisode episode) {
+        this.episode = episode;
     }
 }

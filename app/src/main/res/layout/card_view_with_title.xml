@@ -4,7 +4,8 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:cardCornerRadius="2dp"
-    android:layout_marginBottom="8dp"
+    android:layout_marginTop="8dp"
+    android:layout_marginEnd="8dp"
     android:id="@+id/card_view">
 
     <LinearLayout
@@ -19,7 +20,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="14sp"
-            android:paddingLeft="12dp"
+            android:paddingStart="12dp"
             android:paddingTop="8dp"
             android:paddingBottom="8dp"
             android:gravity="center_vertical"

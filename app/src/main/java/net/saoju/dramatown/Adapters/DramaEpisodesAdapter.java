@@ -1,5 +1,6 @@
 package net.saoju.dramatown.Adapters;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -19,8 +20,10 @@ import java.util.List;
 public class DramaEpisodesAdapter extends RecyclerView.Adapter<DramaEpisodesAdapter.ViewHolder> {
 
     private List<Episode> episodes;
+    private Context context;
 
-    public DramaEpisodesAdapter(List<Episode> episodes) {
+    public DramaEpisodesAdapter(Context context, List<Episode> episodes) {
+        this.context = context;
         this.episodes = episodes;
     }
 
@@ -37,9 +40,9 @@ public class DramaEpisodesAdapter extends RecyclerView.Adapter<DramaEpisodesAdap
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(v.getContext(), EpisodeActivity.class);
+                    Intent intent = new Intent(context, EpisodeActivity.class);
                     intent.putExtra("id", episodes.get(getPosition()).getId());
-                    v.getContext().startActivity(intent);
+                    context.startActivity(intent);
                 }
             });
         }
@@ -55,8 +58,8 @@ public class DramaEpisodesAdapter extends RecyclerView.Adapter<DramaEpisodesAdap
     public void onBindViewHolder(ViewHolder holder, int position) {
         Episode episode = episodes.get(position);
         if (!episode.getPoster_url().isEmpty())
-            Picasso.with(holder.poster.getContext()).load(episode.getPoster_url()).into(holder.poster);
-        holder.title.setText(holder.title.getResources().getString(R.string.episode_title,
+            Picasso.with(context).load(episode.getPoster_url()).into(holder.poster);
+        holder.title.setText(context.getResources().getString(R.string.episode_title,
                 episode.getTitle(), episode.getAlias()));
         holder.release_date.setText(episode.getRelease_date());
     }

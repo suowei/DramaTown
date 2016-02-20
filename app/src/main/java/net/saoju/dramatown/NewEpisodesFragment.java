@@ -48,17 +48,32 @@ public class NewEpisodesFragment extends Fragment {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         service = retrofit.create(SaojuService.class);
-        refresh();
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 refresh();
             }
         });
+        recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (newState == RecyclerView.SCROLL_STATE_IDLE && adapter != null && adapter.getItemCount()
+                        == layoutManager.findLastVisibleItemPosition() + 1) {
+                    loadMore();
+                }
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+            }
+        });
+        refresh();
         return view;
     }
 
-    private void refresh() {
+    public void refresh() {
         swipeRefreshLayout.setRefreshing(true);
         Call<NewEpisodes> newEpisodesCall = service.getNewEpidoes(null);
         newEpisodesCall.enqueue(new Callback<NewEpisodes>() {
@@ -71,45 +86,36 @@ public class NewEpisodesFragment extends Fragment {
                 NewEpisodes newEpisodes = response.body();
                 currentPage = newEpisodes.getCurrent_page();
                 nextPageUrl = newEpisodes.getNext_page_url();
-                adapter = new NewEpisodesAdapter(newEpisodes.getData());
+                adapter = new NewEpisodesAdapter(getActivity(), newEpisodes.getData());
                 recyclerView.setAdapter(adapter);
                 swipeRefreshLayout.setRefreshing(false);
-                recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
-                    @Override
-                    public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                        super.onScrollStateChanged(recyclerView, newState);
-                        if (newState == RecyclerView.SCROLL_STATE_IDLE && adapter.getItemCount()
-                                == layoutManager.findLastVisibleItemPosition() + 1) {
-                            if (nextPageUrl == null || nextPageUrl.isEmpty()) {
-                                return;
-                            }
-                            swipeRefreshLayout.setRefreshing(true);
-                            Call<NewEpisodes> newCall = service.getNewEpidoes(String.valueOf(currentPage + 1));
-                            newCall.enqueue(new Callback<NewEpisodes>() {
-                                @Override
-                                public void onResponse(Response<NewEpisodes> response) {
-                                    if (!response.isSuccess()) {
-                                        Toast.makeText(getContext(), "错误码：" + response.code(), Toast.LENGTH_SHORT).show();
-                                        return;
-                                    }
-                                    NewEpisodes newEpisodes = response.body();
-                                    adapter.addAll(newEpisodes.getData());
-                                    swipeRefreshLayout.setRefreshing(false);
-                                }
+            }
 
-                                @Override
-                                public void onFailure(Throwable t) {
-                                    swipeRefreshLayout.setRefreshing(false);
-                                }
-                            });
-                        }
-                    }
+            @Override
+            public void onFailure(Throwable t) {
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
+    }
 
-                    @Override
-                    public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                        super.onScrolled(recyclerView, dx, dy);
-                    }
-                });
+    private void loadMore() {
+        if (nextPageUrl == null || nextPageUrl.isEmpty() || swipeRefreshLayout.isRefreshing()) {
+            return;
+        }
+        swipeRefreshLayout.setRefreshing(true);
+        Call<NewEpisodes> newCall = service.getNewEpidoes(String.valueOf(currentPage + 1));
+        newCall.enqueue(new Callback<NewEpisodes>() {
+            @Override
+            public void onResponse(Response<NewEpisodes> response) {
+                if (!response.isSuccess()) {
+                    Toast.makeText(getContext(), "错误码：" + response.code(), Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                NewEpisodes newEpisodes = response.body();
+                currentPage = newEpisodes.getCurrent_page();
+                nextPageUrl = newEpisodes.getNext_page_url();
+                adapter.addAll(newEpisodes.getData());
+                swipeRefreshLayout.setRefreshing(false);
             }
 
             @Override

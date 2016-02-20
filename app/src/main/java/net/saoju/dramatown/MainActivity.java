@@ -1,8 +1,10 @@
 package net.saoju.dramatown;
 
+import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -19,6 +21,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
@@ -31,21 +34,13 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private TabLayout tabLayout;
-    private ViewPager viewPager;
-    private SectionsPagerAdapter sectionsPagerAdapter;
-
-    private List<Fragment> fragments;
-    private List<String> titles;
-
-    private NewEpisodesFragment newEpisodesFragment;
-    private ReviewIndexFragment reviewIndexFragment;
-
     private LinearLayout loginView;
     private LinearLayout userView;
     private TextView userNameView;
 
     private SharedPreferences sharedPref;
+
+    private DrawerLayout drawer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +49,7 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
@@ -85,26 +80,60 @@ public class MainActivity extends AppCompatActivity
             loginView.setVisibility(View.GONE);
             userNameView.setText(username);
         }
+        ImageButton userButton = (ImageButton) userView.findViewById(R.id.user_button);
+        userButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, UserActivity.class);
+                intent.putExtra("id", sharedPref.getInt("ID", 0));
+                MainActivity.this.startActivity(intent);
+                drawer.closeDrawer(GravityCompat.START);
+            }
+        });
+        final LinearLayout userDropdown = (LinearLayout) userView.findViewById(R.id.user_dropdown);
+        ImageButton userDropdownButton = (ImageButton) userView.findViewById(R.id.user_dropdown_button);
+        userDropdownButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                userDropdown.setVisibility(userDropdown.getVisibility() == View.GONE ? View.VISIBLE : View.GONE);
+            }
+        });
+        TextView logout = (TextView) userView.findViewById(R.id.logout);
+        logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new AlertDialog.Builder(MainActivity.this)
+                        .setTitle("退出账号")
+                        .setMessage("确定要退出当前账号吗？")
+                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                sharedPref.edit().clear().apply();
+                                getSharedPreferences("cookies", 0).edit().clear().apply();
+                                userView.setVisibility(View.GONE);
+                                loginView.setVisibility(View.VISIBLE);
+                            }
+                        })
+                        .setNegativeButton("取消", null)
+                        .show();
+            }
+        });
 
-        init();
-    }
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+        ViewPager viewPager = (ViewPager) findViewById(R.id.container);
 
-    private void init() {
-        tabLayout = (TabLayout) findViewById(R.id.tabs);
-        viewPager = (ViewPager) findViewById(R.id.container);
+        NewEpisodesFragment newEpisodesFragment = new NewEpisodesFragment();
+        ReviewIndexFragment reviewIndexFragment = new ReviewIndexFragment();
 
-        newEpisodesFragment = new NewEpisodesFragment();
-        reviewIndexFragment = new ReviewIndexFragment();
-
-        fragments = new ArrayList<>();
+        List<Fragment> fragments = new ArrayList<>();
         fragments.add(newEpisodesFragment);
         fragments.add(reviewIndexFragment);
 
-        titles = new ArrayList<>();
+        List<String> titles = new ArrayList<>();
         titles.add("新剧");
         titles.add("评论");
 
-        sectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), fragments, titles);
+        SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), fragments, titles);
 
         viewPager.setAdapter(sectionsPagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
@@ -112,7 +141,6 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -131,42 +159,16 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camara) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
+        if (id == R.id.nav_drama) {
+            Intent intent = new Intent(MainActivity.this, DramaIndexActivity.class);
+            MainActivity.this.startActivity(intent);
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }

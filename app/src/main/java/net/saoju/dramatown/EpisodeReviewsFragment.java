@@ -1,7 +1,6 @@
 package net.saoju.dramatown;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,8 +10,11 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import net.saoju.dramatown.Adapters.EpisodeReviewsAdapter;
+import net.saoju.dramatown.Models.Drama;
+import net.saoju.dramatown.Models.Episode;
 import net.saoju.dramatown.Models.Reviews;
 import net.saoju.dramatown.Utils.ItemDivider;
+import net.saoju.dramatown.Utils.LazyFragment;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -20,7 +22,7 @@ import retrofit2.GsonConverterFactory;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-public class EpisodeReviewsFragment extends Fragment {
+public class EpisodeReviewsFragment extends LazyFragment {
 
     SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
@@ -49,10 +51,30 @@ public class EpisodeReviewsFragment extends Fragment {
         swipeRefreshLayout.setEnabled(false);
         Bundle bundle = getArguments();
         episode = bundle.getInt("id");
+        recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (newState == RecyclerView.SCROLL_STATE_IDLE && adapter != null
+                        && adapter.getItemCount() == layoutManager.findLastVisibleItemPosition() + 1) {
+                    loadMore();
+                }
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+            }
+        });
+        isPrepared = true;
         return view;
     }
 
-    public void refresh() {
+    @Override
+    protected void load() {
+        if (!getUserVisibleHint()) {
+            return;
+        }
         swipeRefreshLayout.setRefreshing(true);
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(SaojuService.BASE_URL)
@@ -70,42 +92,33 @@ public class EpisodeReviewsFragment extends Fragment {
                 Reviews reviews = response.body();
                 currentPage = reviews.getCurrent_page();
                 nextPageUrl = reviews.getNext_page_url();
-                adapter = new EpisodeReviewsAdapter(reviews.getData());
+                adapter = new EpisodeReviewsAdapter(getActivity(), reviews.getData());
                 recyclerView.setAdapter(adapter);
                 swipeRefreshLayout.setRefreshing(false);
-                recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
-                    @Override
-                    public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                        super.onScrollStateChanged(recyclerView, newState);
-                        if (newState == RecyclerView.SCROLL_STATE_IDLE
-                                && adapter.getItemCount() == layoutManager.findLastVisibleItemPosition() + 1) {
-                            if (nextPageUrl == null || nextPageUrl.isEmpty()) {
-                                return;
-                            }
-                            swipeRefreshLayout.setRefreshing(true);
-                            Call<Reviews> newCall = service.getEpisodeReveiws(
-                                    String.valueOf(episode), String.valueOf(currentPage + 1));
-                            newCall.enqueue(new Callback<Reviews>() {
-                                @Override
-                                public void onResponse(Response<Reviews> response) {
-                                    Reviews reviews = response.body();
-                                    adapter.addAll(reviews.getData());
-                                    swipeRefreshLayout.setRefreshing(false);
-                                }
+            }
 
-                                @Override
-                                public void onFailure(Throwable t) {
-                                    swipeRefreshLayout.setRefreshing(false);
-                                }
-                            });
-                        }
-                    }
+            @Override
+            public void onFailure(Throwable t) {
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
+    }
 
-                    @Override
-                    public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                        super.onScrolled(recyclerView, dx, dy);
-                    }
-                });
+    private void loadMore() {
+        if (nextPageUrl == null || nextPageUrl.isEmpty() || swipeRefreshLayout.isRefreshing()) {
+            return;
+        }
+        swipeRefreshLayout.setRefreshing(true);
+        Call<Reviews> newCall = service.getEpisodeReveiws(
+                String.valueOf(episode), String.valueOf(currentPage + 1));
+        newCall.enqueue(new Callback<Reviews>() {
+            @Override
+            public void onResponse(Response<Reviews> response) {
+                Reviews reviews = response.body();
+                currentPage = reviews.getCurrent_page();
+                nextPageUrl = reviews.getNext_page_url();
+                adapter.addAll(reviews.getData());
+                swipeRefreshLayout.setRefreshing(false);
             }
 
             @Override
