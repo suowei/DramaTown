@@ -6,10 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.squareup.picasso.Picasso;
 
 import net.saoju.dramatown.DramaActivity;
 import net.saoju.dramatown.Models.Drama;
@@ -50,7 +47,7 @@ public class DramaIndexAdapter extends RecyclerView.Adapter<DramaIndexAdapter.Vi
     @Override
     public DramaIndexAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new ViewHolder(LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.list_drama_content, parent, false));
+                .inflate(R.layout.item_list_drama, parent, false));
     }
 
     @Override

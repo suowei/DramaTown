@@ -8,8 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import net.saoju.dramatown.Adapters.UserEpfavsAdapter;
-import net.saoju.dramatown.Models.EpisodeFavorites;
+import net.saoju.dramatown.Adapters.UserFavoritesAdapter;
+import net.saoju.dramatown.Models.Favorites;
 import net.saoju.dramatown.Utils.ItemDivider;
 import net.saoju.dramatown.Utils.LazyFragment;
 
@@ -19,11 +19,11 @@ import retrofit2.GsonConverterFactory;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-public class UserEpfavsFragment extends LazyFragment {
+public class UserFavoritesFragment extends LazyFragment {
 
     SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
-    private UserEpfavsAdapter adapter;
+    private UserFavoritesAdapter adapter;
     private LinearLayoutManager layoutManager;
 
     SaojuService service;
@@ -34,7 +34,7 @@ public class UserEpfavsFragment extends LazyFragment {
     private int user;
     private int type;
 
-    public UserEpfavsFragment() {
+    public UserFavoritesFragment() {
     }
 
     @Override
@@ -81,14 +81,14 @@ public class UserEpfavsFragment extends LazyFragment {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         service = retrofit.create(SaojuService.class);
-        Call<EpisodeFavorites> call = service.getUserEpfavs(String.valueOf(user), String.valueOf(type), null);
-        call.enqueue(new Callback<EpisodeFavorites>() {
+        Call<Favorites> call = service.getUserFavorites(String.valueOf(user), String.valueOf(type), null);
+        call.enqueue(new Callback<Favorites>() {
             @Override
-            public void onResponse(Response<EpisodeFavorites> response) {
-                EpisodeFavorites favorites = response.body();
+            public void onResponse(Response<Favorites> response) {
+                Favorites favorites = response.body();
                 currentPage = favorites.getCurrent_page();
                 nextPageUrl = favorites.getNext_page_url();
-                adapter = new UserEpfavsAdapter(getActivity(), favorites.getData());
+                adapter = new UserFavoritesAdapter(getActivity(), favorites.getData());
                 recyclerView.setAdapter(adapter);
                 swipeRefreshLayout.setRefreshing(false);
                 hasLoadedOnce = true;
@@ -106,12 +106,12 @@ public class UserEpfavsFragment extends LazyFragment {
             return;
         }
         swipeRefreshLayout.setRefreshing(true);
-        Call<EpisodeFavorites> newCall = service.getUserEpfavs(
+        Call<Favorites> newCall = service.getUserFavorites(
                 String.valueOf(user), String.valueOf(type), String.valueOf(currentPage + 1));
-        newCall.enqueue(new Callback<EpisodeFavorites>() {
+        newCall.enqueue(new Callback<Favorites>() {
             @Override
-            public void onResponse(Response<EpisodeFavorites> response) {
-                EpisodeFavorites favorites = response.body();
+            public void onResponse(Response<Favorites> response) {
+                Favorites favorites = response.body();
                 currentPage = favorites.getCurrent_page();
                 nextPageUrl = favorites.getNext_page_url();
                 adapter.addAll(favorites.getData());

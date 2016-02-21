@@ -7,6 +7,8 @@ public class Favorite {
     private int type;
     private float rating;
     private String tags;
+    private String updated_at;
+    private Drama drama;
 
     public Favorite(int type, float rating, String tags) {
         this.type = type;
@@ -77,5 +79,21 @@ public class Favorite {
 
     public void setTags(String tags) {
         this.tags = tags;
+    }
+
+    public String getUpdated_at() {
+        return updated_at;
+    }
+
+    public void setUpdated_at(String updated_at) {
+        this.updated_at = updated_at;
+    }
+
+    public Drama getDrama() {
+        return drama;
+    }
+
+    public void setDrama(Drama drama) {
+        this.drama = drama;
     }
 }

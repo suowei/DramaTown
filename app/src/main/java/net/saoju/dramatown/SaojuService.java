@@ -149,4 +149,7 @@ public interface SaojuService {
 
     @GET("api/user/{user}/favorites/{type}")
     Call<Favorites> getUserFavorites(@Path("user") String user, @Path("type") String type, @Query("page") String page);
+
+    @GET("api/user/{user}/reviews")
+    Call<Reviews> getUserReviews(@Path("user") String user, @Query("page") String page);
 }
