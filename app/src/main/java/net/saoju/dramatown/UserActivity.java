@@ -95,12 +95,64 @@ public class UserActivity extends AppCompatActivity {
             }
         });
         LinearLayout favorite0Layout = (LinearLayout) findViewById(R.id.favorite_0_layout);
+        favorite0Layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(UserActivity.this, UserFavoritesActivity.class);
+                intent.putExtra("user", userId);
+                intent.putExtra("type", 0);
+                UserActivity.this.startActivity(intent);
+            }
+        });
         LinearLayout favorite1Layout = (LinearLayout) findViewById(R.id.favorite_1_layout);
+        favorite1Layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(UserActivity.this, UserFavoritesActivity.class);
+                intent.putExtra("user", userId);
+                intent.putExtra("type", 1);
+                UserActivity.this.startActivity(intent);
+            }
+        });
         LinearLayout favorite2Layout = (LinearLayout) findViewById(R.id.favorite_2_layout);
+        favorite2Layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(UserActivity.this, UserFavoritesActivity.class);
+                intent.putExtra("user", userId);
+                intent.putExtra("type", 2);
+                UserActivity.this.startActivity(intent);
+            }
+        });
         LinearLayout favorite3Layout = (LinearLayout) findViewById(R.id.favorite_3_layout);
+        favorite3Layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(UserActivity.this, UserFavoritesActivity.class);
+                intent.putExtra("user", userId);
+                intent.putExtra("type", 3);
+                UserActivity.this.startActivity(intent);
+            }
+        });
         LinearLayout favorite4Layout = (LinearLayout) findViewById(R.id.favorite_4_layout);
+        favorite4Layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(UserActivity.this, UserFavoritesActivity.class);
+                intent.putExtra("user", userId);
+                intent.putExtra("type", 4);
+                UserActivity.this.startActivity(intent);
+            }
+        });
         LinearLayout reviewLayout = (LinearLayout) findViewById(R.id.review_layout);
-        // TODO: 2016/2/20 绑定各个layout点击事件，启动相应activity
+        reviewLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(UserActivity.this, UserReviewsActivity.class);
+                intent.putExtra("user", userId);
+                UserActivity.this.startActivity(intent);
+            }
+        });
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(SaojuService.BASE_URL)

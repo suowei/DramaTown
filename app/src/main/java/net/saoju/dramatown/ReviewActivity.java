@@ -61,6 +61,9 @@ public class ReviewActivity extends AppCompatActivity {
                         review.getUser().getName(),
                         review.getEpisode_id() == 0 ? "" : review.getEpisode().getTitle()));
             }
+        } else if (review.getUser() == null) {
+            info.setText(getResources().getString(R.string.drama_episode_title_short,
+                    review.getDrama().getTitle(), review.getEpisode() != null ? review.getEpisode().getTitle() : ""));
         } else {
             info.setText(getResources().getString(R.string.review_info,
                     review.getUser().getName(), review.getDrama().getTitle(),

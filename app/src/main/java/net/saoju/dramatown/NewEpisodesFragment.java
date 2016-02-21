@@ -41,6 +41,7 @@ public class NewEpisodesFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_new_episodes, container, false);
         swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_layout);
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
+        recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
         Retrofit retrofit = new Retrofit.Builder()

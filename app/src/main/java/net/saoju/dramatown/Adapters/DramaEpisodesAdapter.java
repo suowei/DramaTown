@@ -51,7 +51,7 @@ public class DramaEpisodesAdapter extends RecyclerView.Adapter<DramaEpisodesAdap
     @Override
     public DramaEpisodesAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new ViewHolder(LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.episode_grid_layout, parent, false));
+                .inflate(R.layout.item_grid_episode, parent, false));
     }
 
     @Override
