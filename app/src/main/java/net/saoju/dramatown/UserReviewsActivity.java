@@ -7,10 +7,13 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.view.ViewTreeObserver;
 
 import net.saoju.dramatown.Adapters.UserReviewsAdapter;
 import net.saoju.dramatown.Models.Reviews;
 import net.saoju.dramatown.Utils.ItemDivider;
+
+import java.util.Collections;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -49,12 +52,19 @@ public class UserReviewsActivity extends AppCompatActivity {
         userId = getIntent().getIntExtra("user", 0);
 
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
-        swipeRefreshLayout.setEnabled(false);
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.addItemDecoration(new ItemDivider(this, R.drawable.light_divider));
+        adapter = new UserReviewsAdapter(UserReviewsActivity.this, Collections.EMPTY_LIST, userId);
+        recyclerView.setAdapter(adapter);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                load();
+            }
+        });
         recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -70,7 +80,13 @@ public class UserReviewsActivity extends AppCompatActivity {
                 super.onScrolled(recyclerView, dx, dy);
             }
         });
-        load();
+        swipeRefreshLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                swipeRefreshLayout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                load();
+            }
+        });
     }
 
     private void load() {
@@ -87,8 +103,7 @@ public class UserReviewsActivity extends AppCompatActivity {
                 Reviews reviews = response.body();
                 currentPage = reviews.getCurrent_page();
                 nextPageUrl = reviews.getNext_page_url();
-                adapter = new UserReviewsAdapter(UserReviewsActivity.this, reviews.getData(), userId);
-                recyclerView.setAdapter(adapter);
+                adapter.reset(reviews.getData());
                 swipeRefreshLayout.setRefreshing(false);
             }
 

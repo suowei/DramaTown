@@ -113,6 +113,7 @@ public class EpisodeFavoriteReviewActivity extends AppCompatActivity {
             ratingBar.setRating(getIntent().getFloatExtra("rating", 0));
             Call<Review> reviewCall = service.editEpfavReview(String.valueOf(episodeId));
             saveButton.setEnabled(false);
+            mProgressView.setVisibility(View.VISIBLE);
             reviewCall.enqueue(new Callback<Review>() {
                 @Override
                 public void onResponse(Response<Review> response) {
@@ -121,11 +122,13 @@ public class EpisodeFavoriteReviewActivity extends AppCompatActivity {
                     contentView.setText(review.getContent());
                     visibleView.setChecked(review.getVisible() == 1);
                     saveButton.setEnabled(true);
+                    mProgressView.setVisibility(View.GONE);
                 }
 
                 @Override
                 public void onFailure(Throwable t) {
                     saveButton.setEnabled(true);
+                    mProgressView.setVisibility(View.GONE);
                 }
             });
         }
@@ -220,7 +223,8 @@ public class EpisodeFavoriteReviewActivity extends AppCompatActivity {
 
                         @Override
                         public void onFailure(Throwable t) {
-
+                            saveButton.setEnabled(true);
+                            mProgressView.setVisibility(View.GONE);
                         }
                     });
                 }
@@ -228,6 +232,7 @@ public class EpisodeFavoriteReviewActivity extends AppCompatActivity {
                 @Override
                 public void onFailure(Throwable t) {
                     saveButton.setEnabled(true);
+                    mProgressView.setVisibility(View.GONE);
                 }
             });
         }

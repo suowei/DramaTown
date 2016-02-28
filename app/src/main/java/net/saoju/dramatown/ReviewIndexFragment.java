@@ -14,6 +14,8 @@ import net.saoju.dramatown.Models.Reviews;
 import net.saoju.dramatown.Utils.ItemDivider;
 import net.saoju.dramatown.Utils.LazyFragment;
 
+import java.util.Collections;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.GsonConverterFactory;
@@ -45,6 +47,8 @@ public class ReviewIndexFragment extends LazyFragment {
         layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.addItemDecoration(new ItemDivider(getContext(), R.drawable.light_divider));
+        adapter = new ReviewIndexAdapter(getActivity(), Collections.EMPTY_LIST);
+        recyclerView.setAdapter(adapter);
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(SaojuService.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -89,8 +93,7 @@ public class ReviewIndexFragment extends LazyFragment {
                 Reviews reviews = response.body();
                 currentPage = reviews.getCurrent_page();
                 nextPageUrl = reviews.getNext_page_url();
-                adapter = new ReviewIndexAdapter(getActivity(), reviews.getData());
-                recyclerView.setAdapter(adapter);
+                adapter.reset(reviews.getData());
                 swipeRefreshLayout.setRefreshing(false);
             }
 

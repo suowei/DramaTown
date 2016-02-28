@@ -49,7 +49,6 @@ import retrofit2.Retrofit;
 
 public class EpisodeActivity extends AppCompatActivity {
 
-    private Toolbar toolbar;
     private ImageView imageView;
     private TabLayout tabLayout;
     private LinearLayout favoriteLayout;
@@ -83,7 +82,7 @@ public class EpisodeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_episode);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -180,8 +179,6 @@ public class EpisodeActivity extends AppCompatActivity {
 
     public void setData(Episode data) {
         episode = data;
-        toolbar.setTitle(getResources().getString(R.string.drama_episode_title,
-                episode.getDrama().getTitle(), episode.getTitle(), episode.getAlias()));
         if (!episode.getPoster_url().isEmpty()) {
             Picasso.with(EpisodeActivity.this).load(episode.getPoster_url()).into(imageView);
         }

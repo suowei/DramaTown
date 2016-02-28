@@ -7,11 +7,14 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 
 import net.saoju.dramatown.Adapters.UserFavoritesAdapter;
 import net.saoju.dramatown.Models.Favorites;
 import net.saoju.dramatown.Utils.ItemDivider;
 import net.saoju.dramatown.Utils.LazyFragment;
+
+import java.util.Collections;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -22,7 +25,6 @@ import retrofit2.Retrofit;
 public class UserFavoritesFragment extends LazyFragment {
 
     SwipeRefreshLayout swipeRefreshLayout;
-    private RecyclerView recyclerView;
     private UserFavoritesAdapter adapter;
     private LinearLayoutManager layoutManager;
 
@@ -42,14 +44,22 @@ public class UserFavoritesFragment extends LazyFragment {
                              final Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_user_favorites, container, false);
         swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_layout);
-        recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
+        recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.addItemDecoration(new ItemDivider(getContext(), R.drawable.light_divider));
-        swipeRefreshLayout.setEnabled(false);
+        adapter = new UserFavoritesAdapter(getActivity(), Collections.EMPTY_LIST);
+        recyclerView.setAdapter(adapter);
         Bundle bundle = getArguments();
         user = bundle.getInt("user");
         type = bundle.getInt("type");
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                load();
+            }
+        });
         recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -66,7 +76,13 @@ public class UserFavoritesFragment extends LazyFragment {
             }
         });
         isPrepared = true;
-        load();
+        swipeRefreshLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                swipeRefreshLayout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                load();
+            }
+        });
         return view;
     }
 
@@ -88,8 +104,7 @@ public class UserFavoritesFragment extends LazyFragment {
                 Favorites favorites = response.body();
                 currentPage = favorites.getCurrent_page();
                 nextPageUrl = favorites.getNext_page_url();
-                adapter = new UserFavoritesAdapter(getActivity(), favorites.getData());
-                recyclerView.setAdapter(adapter);
+                adapter.reset(favorites.getData());
                 swipeRefreshLayout.setRefreshing(false);
                 hasLoadedOnce = true;
             }

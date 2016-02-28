@@ -20,7 +20,6 @@ import retrofit2.Retrofit;
 public class UserActivity extends AppCompatActivity {
 
     private int userId;
-    private User user;
 
     private TextView name;
     private TextView created_at;
@@ -177,11 +176,12 @@ public class UserActivity extends AppCompatActivity {
         });
     }
 
-    private void setData(User data) {
-        user = data;
+    private void setData(User user) {
         name.setText(user.getName());
         created_at.setText(getResources().getString(R.string.user_created_at, user.getCreated_at()));
-        introduction.setText(getResources().getString(R.string.user_introduction, user.getIntroduction()));
+        if (user.getIntroduction() != null && !user.getIntroduction().isEmpty()) {
+            introduction.setText(getResources().getString(R.string.user_introduction, user.getIntroduction()));
+        }
         epfav0.setText(getResources().getString(R.string.user_epfav_0, user.getEpfav0()));
         epfav2.setText(getResources().getString(R.string.user_epfav_2, user.getEpfav2()));
         epfav4.setText(getResources().getString(R.string.user_epfav_4, user.getEpfav4()));

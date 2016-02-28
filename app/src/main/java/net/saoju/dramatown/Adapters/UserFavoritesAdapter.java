@@ -83,6 +83,11 @@ public class UserFavoritesAdapter extends RecyclerView.Adapter<UserFavoritesAdap
         return favorites.size();
     }
 
+    public void reset(List<Favorite> favorites) {
+        this.favorites = favorites;
+        notifyDataSetChanged();
+    }
+
     public void addAll(List<Favorite> favorites) {
         int position = getItemCount();
         this.favorites.addAll(favorites);

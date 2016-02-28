@@ -14,6 +14,8 @@ import net.saoju.dramatown.Models.Reviews;
 import net.saoju.dramatown.Utils.ItemDivider;
 import net.saoju.dramatown.Utils.LazyFragment;
 
+import java.util.Collections;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.GsonConverterFactory;
@@ -23,7 +25,6 @@ import retrofit2.Retrofit;
 public class DramaReviewsFragment extends LazyFragment {
 
     SwipeRefreshLayout swipeRefreshLayout;
-    private RecyclerView recyclerView;
     private DramaReviewsAdapter adapter;
     private LinearLayoutManager layoutManager;
 
@@ -33,7 +34,6 @@ public class DramaReviewsFragment extends LazyFragment {
     private String nextPageUrl;
 
     private int drama;
-    private String dramaTitle;
 
     public DramaReviewsFragment() {
     }
@@ -43,13 +43,20 @@ public class DramaReviewsFragment extends LazyFragment {
                              final Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_review_index, container, false);
         swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_layout);
-        recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.addItemDecoration(new ItemDivider(getContext(), R.drawable.light_divider));
-        swipeRefreshLayout.setEnabled(false);
+        adapter = new DramaReviewsAdapter(getActivity(), Collections.EMPTY_LIST);
+        recyclerView.setAdapter(adapter);
         Bundle bundle = getArguments();
         drama = bundle.getInt("id");
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                load();
+            }
+        });
         recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -87,8 +94,7 @@ public class DramaReviewsFragment extends LazyFragment {
                 Reviews reviews = response.body();
                 currentPage = reviews.getCurrent_page();
                 nextPageUrl = reviews.getNext_page_url();
-                adapter = new DramaReviewsAdapter(getActivity(), reviews.getData());
-                recyclerView.setAdapter(adapter);
+                adapter.reset(reviews.getData());
                 swipeRefreshLayout.setRefreshing(false);
             }
 

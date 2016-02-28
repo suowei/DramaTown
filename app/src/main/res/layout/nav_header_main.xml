@@ -33,32 +33,20 @@
         android:orientation="vertical"
         android:layout_gravity="bottom">
 
-        <ImageButton
+        <ImageView
             android:id="@+id/user_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@color/transparent"
             android:src="@mipmap/ic_account_circle_white_48dp" />
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/username"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:orientation="horizontal">
-
-            <TextView android:layout_width="0dp" android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:id="@+id/username" android:textSize="16sp"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
-
-            <ImageButton
-                android:id="@+id/user_dropdown_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@color/transparent"
-                android:src="@mipmap/ic_arrow_drop_down_white_24dp" />
-
-        </LinearLayout>
+            android:textSize="16sp"
+            android:drawableEnd="@mipmap/ic_arrow_drop_down_white_24dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
         <LinearLayout
             android:id="@+id/user_dropdown"

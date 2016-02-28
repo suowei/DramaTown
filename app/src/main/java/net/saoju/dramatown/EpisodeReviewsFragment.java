@@ -10,11 +10,11 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import net.saoju.dramatown.Adapters.EpisodeReviewsAdapter;
-import net.saoju.dramatown.Models.Drama;
-import net.saoju.dramatown.Models.Episode;
 import net.saoju.dramatown.Models.Reviews;
 import net.saoju.dramatown.Utils.ItemDivider;
 import net.saoju.dramatown.Utils.LazyFragment;
+
+import java.util.Collections;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -48,9 +48,16 @@ public class EpisodeReviewsFragment extends LazyFragment {
         layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.addItemDecoration(new ItemDivider(getContext(), R.drawable.light_divider));
-        swipeRefreshLayout.setEnabled(false);
+        adapter = new EpisodeReviewsAdapter(getActivity(), Collections.EMPTY_LIST);
+        recyclerView.setAdapter(adapter);
         Bundle bundle = getArguments();
         episode = bundle.getInt("id");
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                load();
+            }
+        });
         recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -92,8 +99,7 @@ public class EpisodeReviewsFragment extends LazyFragment {
                 Reviews reviews = response.body();
                 currentPage = reviews.getCurrent_page();
                 nextPageUrl = reviews.getNext_page_url();
-                adapter = new EpisodeReviewsAdapter(getActivity(), reviews.getData());
-                recyclerView.setAdapter(adapter);
+                adapter.reset(reviews.getData());
                 swipeRefreshLayout.setRefreshing(false);
             }
 
