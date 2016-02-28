@@ -125,6 +125,11 @@ public class NewEpisodesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         }
     }
 
+    public void reset(List<NewEpisode> newEpisodes) {
+        this.newEpisodes = newEpisodes;
+        notifyDataSetChanged();
+    }
+
     public void addAll(List<NewEpisode> newEpisodes) {
         int position = getItemCount();
         this.newEpisodes.addAll(newEpisodes);

@@ -22,6 +22,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
@@ -37,6 +38,7 @@ public class MainActivity extends AppCompatActivity
     private LinearLayout loginView;
     private LinearLayout userView;
     private TextView userNameView;
+    private LinearLayout userDropdown;
 
     private SharedPreferences sharedPref;
 
@@ -80,7 +82,7 @@ public class MainActivity extends AppCompatActivity
             loginView.setVisibility(View.GONE);
             userNameView.setText(username);
         }
-        ImageButton userButton = (ImageButton) userView.findViewById(R.id.user_button);
+        ImageView userButton = (ImageView) userView.findViewById(R.id.user_button);
         userButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -90,9 +92,8 @@ public class MainActivity extends AppCompatActivity
                 drawer.closeDrawer(GravityCompat.START);
             }
         });
-        final LinearLayout userDropdown = (LinearLayout) userView.findViewById(R.id.user_dropdown);
-        ImageButton userDropdownButton = (ImageButton) userView.findViewById(R.id.user_dropdown_button);
-        userDropdownButton.setOnClickListener(new View.OnClickListener() {
+        userDropdown = (LinearLayout) userView.findViewById(R.id.user_dropdown);
+        userNameView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 userDropdown.setVisibility(userDropdown.getVisibility() == View.GONE ? View.VISIBLE : View.GONE);
@@ -102,6 +103,7 @@ public class MainActivity extends AppCompatActivity
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                userDropdown.setVisibility(View.GONE);
                 new AlertDialog.Builder(MainActivity.this)
                         .setTitle("退出账号")
                         .setMessage("确定要退出当前账号吗？")

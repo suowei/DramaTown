@@ -14,6 +14,7 @@ import net.saoju.dramatown.Models.Episode;
 import net.saoju.dramatown.Models.Review;
 import net.saoju.dramatown.R;
 import net.saoju.dramatown.ReviewActivity;
+import net.saoju.dramatown.UserActivity;
 
 import java.util.List;
 
@@ -59,8 +60,17 @@ public class EpisodeReviewsAdapter extends RecyclerView.Adapter<EpisodeReviewsAd
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        Review review = reviews.get(position);
+        final Review review = reviews.get(position);
         holder.info.setText(review.getUser().getName());
+        holder.info.setTextColor(context.getResources().getColor(R.color.linkColor));
+        holder.info.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, UserActivity.class);
+                intent.putExtra("id", review.getUser_id());
+                context.startActivity(intent);
+            }
+        });
         holder.created_at.setText(review.getCreated_at());
         holder.title.setText(review.getTitle());
         if (review.getTitle().isEmpty()) {
@@ -74,6 +84,11 @@ public class EpisodeReviewsAdapter extends RecyclerView.Adapter<EpisodeReviewsAd
     @Override
     public int getItemCount() {
         return reviews.size();
+    }
+
+    public void reset(List<Review> reviews) {
+        this.reviews = reviews;
+        notifyDataSetChanged();
     }
 
     public void addAll(List<Review> reviews) {

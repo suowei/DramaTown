@@ -68,4 +68,9 @@ public class DramaEpisodesAdapter extends RecyclerView.Adapter<DramaEpisodesAdap
     public int getItemCount() {
         return episodes.size();
     }
+
+    public void reset(List<Episode> episodes) {
+        this.episodes = episodes;
+        notifyDataSetChanged();
+    }
 }

@@ -206,18 +206,28 @@ public class DramaActivity extends AppCompatActivity {
         drama = data;
         toolbar.setTitle(drama.getTitle());
         ForegroundColorSpan span = new ForegroundColorSpan(getResources().getColor(R.color.colorPrimaryLight));
-        SpannableString spanString = new SpannableString(getResources().getString(R.string.drama_alias, drama.getAlias()));
-        spanString.setSpan(span, 0, 7, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        alias.setText(spanString);
-        spanString = new SpannableString(getResources().getString(R.string.drama_type, drama.getTypeString()));
+        SpannableString spanString = new SpannableString(getResources().getString(R.string.drama_type, drama.getTypeString()));
         spanString.setSpan(span, 0, 3, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         type.setText(spanString);
+        if (drama.getAlias().isEmpty()) {
+            alias.setVisibility(View.GONE);
+        } else {
+            spanString = new SpannableString(getResources().getString(R.string.drama_alias, drama.getAlias()));
+            spanString.setSpan(span, 0, 7, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            alias.setText(spanString);
+            alias.setVisibility(View.VISIBLE);
+        }
         spanString = new SpannableString(getResources().getString(R.string.drama_era, drama.getEraString()));
         spanString.setSpan(span, 0, 3, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         era.setText(spanString);
-        spanString = new SpannableString(getResources().getString(R.string.drama_genre, drama.getGenre()));
-        spanString.setSpan(span, 0, 3, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        genre.setText(spanString);
+        if (drama.getGenre().isEmpty()) {
+            genre.setVisibility(View.GONE);
+        } else {
+            spanString = new SpannableString(getResources().getString(R.string.drama_genre, drama.getGenre()));
+            spanString.setSpan(span, 0, 3, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            genre.setText(spanString);
+            genre.setVisibility(View.VISIBLE);
+        }
         spanString = new SpannableString(getResources().getString(R.string.drama_original, drama.getOriginalString()));
         spanString.setSpan(span, 0, 3, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         origianl.setText(spanString);
@@ -235,9 +245,14 @@ public class DramaActivity extends AppCompatActivity {
         } else {
             introduction.setText(drama.getIntroduction());
         }
-        spanString = new SpannableString(getResources().getString(R.string.drama_commtags, drama.getCommtagsString()));
-        spanString.setSpan(span, 0, 5, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        commtags.setText(spanString);
+        if (drama.getCommtags() == null || drama.getCommtags().isEmpty()) {
+            commtags.setVisibility(View.GONE);
+        } else {
+            spanString = new SpannableString(getResources().getString(R.string.drama_commtags, drama.getCommtagsString()));
+            spanString.setSpan(span, 0, 5, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            commtags.setText(spanString);
+            commtags.setVisibility(View.VISIBLE);
+        }
 
         if (drama.getUserFavorite() != null) {
             updateFavorite(drama.getUserFavorite().getType(),

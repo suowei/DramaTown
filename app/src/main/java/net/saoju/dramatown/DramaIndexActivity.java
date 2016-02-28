@@ -6,11 +6,14 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
+import android.view.ViewTreeObserver;
 import android.widget.Toast;
 
 import net.saoju.dramatown.Adapters.DramaIndexAdapter;
 import net.saoju.dramatown.Models.Dramas;
 import net.saoju.dramatown.Utils.ItemDivider;
+
+import java.util.Collections;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -37,16 +40,23 @@ public class DramaIndexActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
-        swipeRefreshLayout.setEnabled(false);
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.addItemDecoration(new ItemDivider(this, R.drawable.light_divider));
+        adapter = new DramaIndexAdapter(DramaIndexActivity.this, Collections.EMPTY_LIST);
+        recyclerView.setAdapter(adapter);
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(SaojuService.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         service = retrofit.create(SaojuService.class);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                load();
+            }
+        });
         recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -62,7 +72,13 @@ public class DramaIndexActivity extends AppCompatActivity {
                 super.onScrolled(recyclerView, dx, dy);
             }
         });
-        load();
+        swipeRefreshLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                swipeRefreshLayout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                load();
+            }
+        });
     }
 
     private void load() {
@@ -78,8 +94,7 @@ public class DramaIndexActivity extends AppCompatActivity {
                 Dramas dramas = response.body();
                 currentPage = dramas.getCurrent_page();
                 nextPageUrl = dramas.getNext_page_url();
-                adapter = new DramaIndexAdapter(DramaIndexActivity.this, dramas.getData());
-                recyclerView.setAdapter(adapter);
+                adapter.reset(dramas.getData());
                 swipeRefreshLayout.setRefreshing(false);
             }
 

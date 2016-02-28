@@ -78,6 +78,11 @@ public class UserEpfavsAdapter extends RecyclerView.Adapter<UserEpfavsAdapter.Vi
         return favorites.size();
     }
 
+    public void reset(List<EpisodeFavorite> favorites) {
+        this.favorites = favorites;
+        notifyDataSetChanged();
+    }
+
     public void addAll(List<EpisodeFavorite> favorites) {
         int position = getItemCount();
         this.favorites.addAll(favorites);

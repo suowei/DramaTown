@@ -63,6 +63,11 @@ public class DramaIndexAdapter extends RecyclerView.Adapter<DramaIndexAdapter.Vi
         return dramas.size();
     }
 
+    public void reset(List<Drama> dramas) {
+        this.dramas = dramas;
+        notifyDataSetChanged();
+    }
+
     public void addAll(List<Drama> dramas) {
         int position = getItemCount();
         this.dramas.addAll(dramas);

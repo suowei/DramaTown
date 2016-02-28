@@ -70,4 +70,9 @@ public class SearchResultsAdapter extends RecyclerView.Adapter<SearchResultsAdap
     public int getItemCount() {
         return dramas.size();
     }
+
+    public void reset(List<Drama> dramas) {
+        this.dramas = dramas;
+        notifyDataSetChanged();
+    }
 }

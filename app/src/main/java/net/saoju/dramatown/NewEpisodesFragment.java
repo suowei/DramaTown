@@ -1,6 +1,5 @@
 package net.saoju.dramatown;
 
-
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -9,10 +8,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.Toast;
 
 import net.saoju.dramatown.Adapters.NewEpisodesAdapter;
 import net.saoju.dramatown.Models.NewEpisodes;
+
+import java.util.Collections;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -44,6 +46,8 @@ public class NewEpisodesFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
+        adapter = new NewEpisodesAdapter(getActivity(), Collections.EMPTY_LIST);
+        recyclerView.setAdapter(adapter);
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(SaojuService.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -70,7 +74,13 @@ public class NewEpisodesFragment extends Fragment {
                 super.onScrolled(recyclerView, dx, dy);
             }
         });
-        refresh();
+        swipeRefreshLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                swipeRefreshLayout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                refresh();
+            }
+        });
         return view;
     }
 
@@ -87,8 +97,7 @@ public class NewEpisodesFragment extends Fragment {
                 NewEpisodes newEpisodes = response.body();
                 currentPage = newEpisodes.getCurrent_page();
                 nextPageUrl = newEpisodes.getNext_page_url();
-                adapter = new NewEpisodesAdapter(getActivity(), newEpisodes.getData());
-                recyclerView.setAdapter(adapter);
+                adapter.reset(newEpisodes.getData());
                 swipeRefreshLayout.setRefreshing(false);
             }
 

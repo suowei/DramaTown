@@ -17,6 +17,7 @@ import net.saoju.dramatown.Adapters.SearchResultsAdapter;
 import net.saoju.dramatown.Models.Drama;
 import net.saoju.dramatown.Utils.ItemDivider;
 
+import java.util.Collections;
 import java.util.List;
 
 import retrofit2.Call;
@@ -43,8 +44,11 @@ public class SearchResultsActivity extends AppCompatActivity {
             }
         });
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.addItemDecoration(new ItemDivider(this, R.drawable.light_divider));
+        adapter = new SearchResultsAdapter(SearchResultsActivity.this, Collections.EMPTY_LIST);
+        recyclerView.setAdapter(adapter);
         handleIntent(getIntent());
     }
 
@@ -72,8 +76,7 @@ public class SearchResultsActivity extends AppCompatActivity {
                         return;
                     }
                     List<Drama> dramas = response.body();
-                    adapter = new SearchResultsAdapter(SearchResultsActivity.this, dramas);
-                    recyclerView.setAdapter(adapter);
+                    adapter.reset(dramas);
                 }
 
                 @Override
