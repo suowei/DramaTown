@@ -45,6 +45,12 @@
             android:layout_height="wrap_content"
             android:textColor="@color/textPrimary" />
         <TextView
+            android:id="@+id/url"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:autoLink="web"
+            android:textColor="@color/textSecondary" />
+        <TextView
             android:id="@+id/sc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -59,13 +65,6 @@
             android:layout_marginBottom="8dp"
             android:textColor="@color/textPrimary"
             android:singleLine="false" />
-        <TextView
-            android:id="@+id/url"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:autoLink="web"
-            android:textColor="@color/textSecondary" />
 
     </LinearLayout>
 

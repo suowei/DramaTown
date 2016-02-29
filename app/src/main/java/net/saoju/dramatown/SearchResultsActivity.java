@@ -77,6 +77,9 @@ public class SearchResultsActivity extends AppCompatActivity {
                     }
                     List<Drama> dramas = response.body();
                     adapter.reset(dramas);
+                    if (dramas.isEmpty()) {
+                        Toast.makeText(SearchResultsActivity.this, "未找到结果", Toast.LENGTH_SHORT).show();
+                    }
                 }
 
                 @Override

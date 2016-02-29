@@ -13,8 +13,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
 import android.widget.CompoundButton;
@@ -61,12 +59,7 @@ public class EpisodeActivity extends AppCompatActivity {
     private LinearLayout addFavoriteLayout;
     private LinearLayout editFavoriteLayout;
     private LinearLayout deleteFavoriteLayout;
-    private FloatingActionButton addFavoriteReviewFab;
-    private FloatingActionButton editFavoriteReviewFab;
-    private FloatingActionButton addFavoriteFab;
-    private FloatingActionButton editFavoriteFab;
-    private FloatingActionButton deleteFavoriteFab;
-    private FloatingActionButton createReviewFab;
+    private LinearLayout createReviewLayout;
 
     private EpisodeDetailFragment episodeDetailFragment;
     private EpisodeReviewsFragment episodeReviewsFragment;
@@ -105,12 +98,7 @@ public class EpisodeActivity extends AppCompatActivity {
         addFavoriteLayout = (LinearLayout) findViewById(R.id.add_favorite_layout);
         editFavoriteLayout = (LinearLayout) findViewById(R.id.edit_favorite_layout);
         deleteFavoriteLayout = (LinearLayout) findViewById(R.id.delete_favorite_layout);
-        addFavoriteReviewFab = (FloatingActionButton) findViewById(R.id.add_favorite_review_fab);
-        editFavoriteReviewFab = (FloatingActionButton) findViewById(R.id.edit_favorite_review_fab);
-        addFavoriteFab = (FloatingActionButton) findViewById(R.id.add_favorite_fab);
-        editFavoriteFab = (FloatingActionButton) findViewById(R.id.edit_favorite_fab);
-        deleteFavoriteFab = (FloatingActionButton) findViewById(R.id.delete_favorite_fab);
-        createReviewFab = (FloatingActionButton) findViewById(R.id.create_review_fab);
+        createReviewLayout = (LinearLayout) findViewById(R.id.create_review_layout);
 
         fabMenuOpened = false;
         fab.setOnClickListener(new View.OnClickListener() {
@@ -204,7 +192,7 @@ public class EpisodeActivity extends AppCompatActivity {
             editFavoriteLayout.setVisibility(View.GONE);
             deleteFavoriteLayout.setVisibility(View.GONE);
         }
-        addFavoriteReviewFab.setOnClickListener(new View.OnClickListener() {
+        addFavoriteReviewLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 openOrCloseFabMenu();
@@ -215,7 +203,7 @@ public class EpisodeActivity extends AppCompatActivity {
                 EpisodeActivity.this.startActivityForResult(intent, 1);
             }
         });
-        editFavoriteReviewFab.setOnClickListener(new View.OnClickListener() {
+        editFavoriteReviewLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 openOrCloseFabMenu();
@@ -228,7 +216,7 @@ public class EpisodeActivity extends AppCompatActivity {
                 EpisodeActivity.this.startActivityForResult(intent, 1);
             }
         });
-        addFavoriteFab.setOnClickListener(new View.OnClickListener() {
+        addFavoriteLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 openOrCloseFabMenu();
@@ -247,7 +235,7 @@ public class EpisodeActivity extends AppCompatActivity {
                         .show();
             }
         });
-        editFavoriteFab.setOnClickListener(new View.OnClickListener() {
+        editFavoriteLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 openOrCloseFabMenu();
@@ -265,7 +253,7 @@ public class EpisodeActivity extends AppCompatActivity {
                         .show();
             }
         });
-        deleteFavoriteFab.setOnClickListener(new View.OnClickListener() {
+        deleteFavoriteLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 openOrCloseFabMenu();
@@ -282,7 +270,7 @@ public class EpisodeActivity extends AppCompatActivity {
                         .show();
             }
         });
-        createReviewFab.setOnClickListener(new View.OnClickListener() {
+        createReviewLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 openOrCloseFabMenu();
