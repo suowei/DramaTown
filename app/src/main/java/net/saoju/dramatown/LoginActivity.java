@@ -3,7 +3,6 @@ package net.saoju.dramatown;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 
@@ -12,7 +11,6 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
@@ -46,6 +44,8 @@ public class LoginActivity extends AppCompatActivity {
     private View mLoginFormView;
 
     private SharedPreferences sharedPref;
+
+    private int code;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -188,7 +188,7 @@ public class LoginActivity extends AppCompatActivity {
             try {
                 Response<User> response = loginCall.execute();
                 if (!response.isSuccess() && response.code() != 400) {
-                    Toast.makeText(LoginActivity.this, "错误码：" + response.code(), Toast.LENGTH_SHORT).show();
+                    code = response.code();
                     return false;
                 }
                 User user = response.body();
@@ -211,6 +211,7 @@ public class LoginActivity extends AppCompatActivity {
                 Toast.makeText(LoginActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
                 finish();
             } else {
+                Toast.makeText(LoginActivity.this, "错误码：" + code, Toast.LENGTH_SHORT).show();
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
                 mPasswordView.requestFocus();
             }
