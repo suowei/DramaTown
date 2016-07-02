@@ -91,4 +91,5 @@
     <string name="user_review">用户评论</string>
     <string name="user_drama_review">剧集评论：%1$s篇</string>
     <string name="drama_episode_title_short">《%1$s》%2$s</string>
+    <string name="register_guide">本站实行邀请注册制，会不定期向已注册用户发送邀请码，各位想注册的朋友可以找已经是网站用户的朋友提供邀请码，然后访问saoju.net，就可以注册了~</string>
 </resources>
