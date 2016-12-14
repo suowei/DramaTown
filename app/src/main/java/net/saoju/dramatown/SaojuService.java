@@ -24,7 +24,7 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface SaojuService {
-    String BASE_URL = "http://saoju.net";
+    String BASE_URL = "https://saoju.net";
 
     @GET("api/newepisodes")
     Call<NewEpisodes> getNewEpidoes(@Query("page") String page);
